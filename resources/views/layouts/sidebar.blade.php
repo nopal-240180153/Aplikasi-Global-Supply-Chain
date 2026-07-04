@@ -140,11 +140,13 @@
 
 </a>
 
-<a href="#">
+<a href="{{ route('weather.index') }}"
+   class="{{ request()->routeIs('weather.*') ? 'active' : '' }}">
 
     <i class="bi bi-cloud-sun"></i>
 
     Monitoring Cuaca
+
 
 </a>
 

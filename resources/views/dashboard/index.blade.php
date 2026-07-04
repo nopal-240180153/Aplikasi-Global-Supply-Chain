@@ -31,7 +31,7 @@
                     </div>
 
                     <div class="fs-1 text-primary">
-                        🌍
+                        
                     </div>
 
                 </div>
@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="fs-1 text-danger">
-                        ⚠️
+                        
                     </div>
 
                 </div>
@@ -95,7 +95,7 @@
                     </div>
 
                     <div class="fs-1 text-warning">
-                        📰
+                        
                     </div>
 
                 </div>
@@ -127,7 +127,7 @@
                     </div>
 
                     <div class="fs-1 text-success">
-                        💱
+                        
                     </div>
 
                 </div>
@@ -145,7 +145,7 @@
     <div class="card-body">
 
         <h5 class="mb-3">
-            🌎 Peta Monitoring Global
+             Peta Monitoring Global
         </h5>
 
         <div id="map" style="height:500px;border-radius:12px;"></div>

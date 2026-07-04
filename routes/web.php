@@ -23,6 +23,9 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/countries', [CountryController::class,'index'])
     ->name('countries.index');
+
+    Route::get('/weather', [App\Http\Controllers\WeatherController::class, 'index'])
+    ->name('weather.index');
 });
 
 require __DIR__.'/auth.php';
