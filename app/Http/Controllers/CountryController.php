@@ -2,21 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CountryService;
+use App\Models\Country;
+use Illuminate\Http\Request;
 
 class CountryController extends Controller
 {
-    protected CountryService $countryService;
-
-    public function __construct(CountryService $countryService)
+    public function index(Request $request)
     {
-        $this->countryService = $countryService;
-    }
+        $query = Country::query();
 
-    public function index()
-    {
-        $countries = $this->countryService->getAllCountries();
+        // Pencarian nama negara
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
 
-        return view('countries.index', compact('countries'));
+        // Filter region
+        if ($request->filled('region')) {
+            $query->where('region', $request->region);
+        }
+
+        $countries = $query
+            ->orderBy('name')
+            ->paginate(20)
+            ->withQueryString();
+
+        $regions = Country::select('region')
+            ->whereNotNull('region')
+            ->distinct()
+            ->orderBy('region')
+            ->pluck('region');
+
+        return view('countries.index', compact('countries', 'regions'));
     }
 }

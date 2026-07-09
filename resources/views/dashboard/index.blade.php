@@ -4,35 +4,119 @@
 
 @section('content')
 
-<h2 class="mb-4">
-    Dashboard Pemantauan Rantai Pasok Global
-</h2>
+<div class="container-fluid">
 
-<div class="row">
+    <div class="mb-4">
 
-    <div class="col-lg-3 col-md-6 mb-3">
+        <h2 class="fw-bold mb-1">
+            Dashboard
+        </h2>
 
-        <div class="card card-dashboard border-0 shadow-sm">
+        <p class="text-muted">
+            Global Supply Chain Monitoring System
+        </p>
 
-            <div class="card-body">
+    </div>
 
-                <div class="d-flex justify-content-between align-items-center">
+    <div class="row g-4">
 
-                    <div>
+        <div class="col-lg-3 col-md-6">
 
-                        <small class="text-muted">
-                            Total Negara
-                        </small>
+            <div class="card shadow-sm h-100">
 
-                        <h2 class="fw-bold mt-2">
-                            {{ number_format($totalCountries) }}
-                        </h2>
+                <div class="card-body">
 
-                    </div>
+                    <small class="text-muted">
+                        Total Negara
+                    </small>
 
-                    <div class="fs-1 text-primary">
-                        
-                    </div>
+                    <h2 class="fw-bold mt-2">
+
+                        {{ number_format($totalCountries) }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Populasi
+                    </small>
+
+                    <h2 class="fw-bold mt-2">
+
+                        {{ number_format($totalPopulation) }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Region
+                    </small>
+
+                    <h2 class="fw-bold mt-2">
+
+                        {{ $regions }}
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Status Sinkronisasi
+                    </small>
+
+                    <h5 class="mt-2">
+
+                        @if($lastSync)
+
+                            <span class="badge bg-success">
+
+                                {{ $lastSync->status }}
+
+                            </span>
+
+                        @else
+
+                            <span class="badge bg-secondary">
+
+                                Belum Ada
+
+                            </span>
+
+                        @endif
+
+                    </h5>
 
                 </div>
 
@@ -42,130 +126,102 @@
 
     </div>
 
-    <div class="col-lg-3 col-md-6 mb-3">
+    <div class="card shadow-sm mt-4">
 
-        <div class="card card-dashboard border-0 shadow-sm">
+        <div class="card-header">
 
-            <div class="card-body">
+            <strong>
 
-                <div class="d-flex justify-content-between align-items-center">
+                10 Negara Terakhir
 
-                    <div>
+            </strong>
 
-                        <small class="text-muted">
-                            Risiko Tinggi
-                        </small>
+        </div>
 
-                        <h2 class="fw-bold mt-2">
-                            0
-                        </h2>
+        <div class="card-body p-0">
 
-                    </div>
+            <div class="table-responsive">
 
-                    <div class="fs-1 text-danger">
-                        
-                    </div>
+                <table class="table table-hover mb-0">
 
-                </div>
+                    <thead>
+
+                        <tr>
+
+                            <th>Bendera</th>
+
+                            <th>Negara</th>
+
+                            <th>Region</th>
+
+                            <th>Mata Uang</th>
+
+                            <th>Risk</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    @foreach($latestCountries as $country)
+
+                        <tr>
+
+                            <td width="70">
+
+                                @if($country->flag)
+
+                                    <img
+                                        src="{{ $country->flag }}"
+                                        width="40">
+
+                                @endif
+
+                            </td>
+
+                            <td>
+
+                                {{ $country->name }}
+
+                            </td>
+
+                            <td>
+
+                                {{ $country->region }}
+
+                            </td>
+
+                            <td>
+
+                                {{ $country->currency_code }}
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-success">
+
+                                    {{ $country->risk_level }}
+
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    @endforeach
+
+                    </tbody>
+
+                </table>
 
             </div>
 
         </div>
-
-    </div>
-
-    <div class="col-lg-3 col-md-6 mb-3">
-
-        <div class="card card-dashboard border-0 shadow-sm">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <small class="text-muted">
-                            Berita Hari Ini
-                        </small>
-
-                        <h2 class="fw-bold mt-2">
-                            0
-                        </h2>
-
-                    </div>
-
-                    <div class="fs-1 text-warning">
-                        
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <div class="col-lg-3 col-md-6 mb-3">
-
-        <div class="card card-dashboard border-0 shadow-sm">
-
-            <div class="card-body">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <small class="text-muted">
-                            Nilai Tukar
-                        </small>
-
-                        <h2 class="fw-bold mt-2">
-                            -
-                        </h2>
-
-                    </div>
-
-                    <div class="fs-1 text-success">
-                        
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
-<div class="card card-dashboard mt-4 border-0 shadow-sm">
-
-    <div class="card-body">
-
-        <h5 class="mb-3">
-             Peta Monitoring Global
-        </h5>
-
-        <div id="map" style="height:500px;border-radius:12px;"></div>
 
     </div>
 
 </div>
 
 @endsection
-
-@push('scripts')
-
-<script>
-
-const map = L.map('map').setView([20,0],2);
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom:19,
-}).addTo(map);
-
-</script>
-
-@endpush

@@ -1,7 +1,6 @@
 <style>
 
 .sidebar{
-
     width:260px;
     height:100vh;
     position:fixed;
@@ -11,87 +10,66 @@
     color:white;
     overflow-y:auto;
     z-index:1000;
-
 }
 
 .sidebar-header{
-
     padding:25px;
     border-bottom:1px solid rgba(255,255,255,.08);
     text-align:center;
-
 }
 
 .sidebar-header h4{
-
     margin-bottom:5px;
     font-weight:700;
-
 }
 
 .sidebar-header small{
-
     color:#94a3b8;
-
 }
 
 .sidebar-menu{
-
     padding:15px 0;
-
 }
 
 .sidebar-menu .menu-title{
-
     color:#94a3b8;
     font-size:12px;
     font-weight:bold;
     padding:12px 25px;
     text-transform:uppercase;
-
 }
 
 .sidebar-menu a{
-
     display:flex;
     align-items:center;
     color:#cbd5e1;
     text-decoration:none;
     padding:12px 25px;
     transition:.3s;
-
 }
 
 .sidebar-menu a:hover{
-
     background:#1e293b;
     color:white;
-
 }
 
 .sidebar-menu a.active{
-
     background:#2563eb;
     color:white;
-
 }
 
 .sidebar-menu i{
-
     width:24px;
     font-size:18px;
     margin-right:10px;
-
 }
 
 .sidebar-footer{
-
     padding:20px;
     border-top:1px solid rgba(255,255,255,.08);
     color:#94a3b8;
     font-size:12px;
     text-align:center;
-
 }
 
 </style>
@@ -100,7 +78,7 @@
 
     <div class="sidebar-header">
 
-        <h4>🌍 GSCMS</h4>
+        <h4>GSCMS</h4>
 
         <small>Global Supply Chain Monitoring</small>
 
@@ -108,47 +86,55 @@
 
     <div class="sidebar-menu">
 
+        {{-- DASHBOARD --}}
         <div class="menu-title">
-
             Dashboard
-
         </div>
 
         <a href="{{ route('dashboard') }}"
-   class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+           class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
 
-    <i class="bi bi-speedometer2"></i>
+            <i class="bi bi-speedometer2"></i>
 
-    Dashboard
+            Dashboard
 
-</a>
+        </a>
 
+        {{-- MASTER DATA --}}
         <div class="menu-title">
-
-            Monitoring
-
+            Master Data
         </div>
 
         <a href="{{ route('countries.index') }}"
-   class="{{ request()->routeIs('countries.*') ? 'active' : '' }}">
+           class="{{ request()->routeIs('countries.*') ? 'active' : '' }}">
 
-    <i class="bi bi-globe2"></i>
+            <i class="bi bi-globe2"></i>
 
-    Data Negara
+            Data Negara
 
-</a>
+        </a>
 
-</a>
+        <a href="#">
 
-<a href="{{ route('weather.index') }}"
-   class="{{ request()->routeIs('weather.*') ? 'active' : '' }}">
+            <i class="bi bi-geo-alt-fill"></i>
 
-    <i class="bi bi-cloud-sun"></i>
+            Data Pelabuhan
 
-    Monitoring Cuaca
+        </a>
 
+        {{-- MONITORING --}}
+        <div class="menu-title">
+            Monitoring
+        </div>
 
-</a>
+        <a href="{{ route('weather.index') }}"
+           class="{{ request()->routeIs('weather.*') ? 'active' : '' }}">
+
+            <i class="bi bi-cloud-sun"></i>
+
+            Monitoring Cuaca
+
+        </a>
 
         <a href="#">
 
@@ -168,19 +154,16 @@
 
         <a href="#">
 
-            <i class="bi bi-geo-alt-fill"></i>
-
-            Lokasi Pelabuhan
-
-        </a>
-
-        <a href="#">
-
             <i class="bi bi-newspaper"></i>
 
             Berita Global
 
         </a>
+
+        {{-- ANALISIS --}}
+        <div class="menu-title">
+            Analisis
+        </div>
 
         <a href="#">
 
@@ -214,25 +197,25 @@
 
         </a>
 
+        {{-- ADMINISTRASI --}}
         <div class="menu-title">
-
-            Administrator
-
+            Administrasi
         </div>
+
+        <a href="{{ route('admin.sync') }}"
+           class="{{ request()->routeIs('admin.sync') ? 'active' : '' }}">
+
+            <i class="bi bi-arrow-repeat"></i>
+
+            Sinkronisasi Data
+
+        </a>
 
         <a href="#">
 
             <i class="bi bi-people-fill"></i>
 
             Manajemen User
-
-        </a>
-
-        <a href="#">
-
-            <i class="bi bi-database-fill"></i>
-
-            Dataset Pelabuhan
 
         </a>
 
@@ -256,11 +239,11 @@
 
     <div class="sidebar-footer">
 
-        Versi 1.0
+        <strong>Versi 1.0</strong>
 
         <br>
 
-        Global Supply Chain Monitoring
+        Global Supply Chain Monitoring System
 
     </div>
 

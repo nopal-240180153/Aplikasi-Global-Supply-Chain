@@ -8,19 +8,36 @@ class Country extends Model
 {
     protected $fillable = [
 
+        'uuid',
+
         'name',
         'official_name',
+
         'iso2',
         'iso3',
+
         'capital',
+
         'region',
         'subregion',
+        'continent',
+
         'currency_code',
         'currency_name',
+
+        'language',
+
         'flag',
+
         'latitude',
         'longitude',
-        'population'
+
+        'population',
+
+        'risk_score',
+        'risk_level',
+
+        'last_synced_at',
 
     ];
 

@@ -34,5 +34,16 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'restcountries' => [
 
+    'url' => env('REST_COUNTRIES_BASE_URL'),
+
+    'key' => env('REST_COUNTRIES_API_KEY'),
+
+    ],
+    'open_meteo' => [
+
+    'url' => env('OPEN_METEO_BASE_URL'),
+
+    ],
 ];

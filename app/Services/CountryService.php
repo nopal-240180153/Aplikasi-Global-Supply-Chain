@@ -2,41 +2,31 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Http;
+use App\Models\Country;
 
 class CountryService
 {
+    /**
+     * Ambil seluruh negara dari database
+     */
     public function getAllCountries()
     {
-        $allCountries = collect();
+        return Country::orderBy('name')->get();
+    }
 
-        $offset = 0;
-        $limit = 25;
+    /**
+     * Ambil negara berdasarkan UUID
+     */
+    public function findByUuid(string $uuid)
+    {
+        return Country::where('uuid', $uuid)->first();
+    }
 
-        do {
-
-            $response = Http::withToken(env('REST_COUNTRIES_API_KEY'))
-                ->acceptJson()
-                ->get(env('REST_COUNTRIES_BASE_URL') . '/countries/v5', [
-                    'offset' => $offset
-                ]);
-
-            if (!$response->successful()) {
-                abort(500, 'Gagal mengambil data negara.');
-            }
-
-            $json = $response->json();
-
-            $countries = collect($json['data']['objects'] ?? []);
-
-            $allCountries = $allCountries->merge($countries);
-
-            $more = $json['data']['meta']['more'] ?? false;
-
-            $offset += $limit;
-
-        } while ($more);
-
-        return $allCountries;
+    /**
+     * Total negara
+     */
+    public function totalCountries(): int
+    {
+        return Country::count();
     }
 }

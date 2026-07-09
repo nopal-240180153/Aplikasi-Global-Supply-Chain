@@ -2,23 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CountryService;
+use App\Models\Country;
 
 class DashboardController extends Controller
 {
-    protected CountryService $countryService;
-
-    public function __construct(CountryService $countryService)
-    {
-        $this->countryService = $countryService;
-    }
-
     public function index()
     {
-        $countries = $this->countryService->getAllCountries();
+        $totalCountries = Country::count();
 
-        $totalCountries = $countries->count();
+        $totalContinents = Country::whereNotNull('continent')
+            ->distinct()
+            ->count('continent');
 
-        return view('dashboard.index', compact('totalCountries'));
+        $globalRisk = 'Low';
+
+        $countries = Country::all();
+
+        $continentChart = Country::selectRaw('continent, COUNT(*) as total')
+            ->whereNotNull('continent')
+            ->groupBy('continent')
+            ->orderBy('total', 'DESC')
+            ->get();
+
+        $riskChart = Country::selectRaw('risk_level, COUNT(*) as total')
+            ->groupBy('risk_level')
+            ->get();
+
+        return view('dashboard', compact(
+            'totalCountries',
+            'totalContinents',
+            'globalRisk',
+            'countries',
+            'continentChart',
+            'riskChart'
+        ));
     }
 }
