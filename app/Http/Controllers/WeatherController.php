@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use App\Models\Country;
 use App\Repositories\WeatherRepository;
 
 class WeatherController extends Controller
@@ -13,12 +15,50 @@ class WeatherController extends Controller
         $this->repository = $repository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $weatherLogs = $this->repository->paginate(20);
+        $search = $request->search;
+        $continent = $request->continent;
+        $condition = $request->condition;
 
-        return view('weather.index', compact(
-            'weatherLogs'
-        ));
+        $weatherLogs = $this->repository->paginate(
+            50,
+            $search,
+            $continent,
+            $condition
+        );
+
+        $continents = Country::select('continent')
+            ->distinct()
+            ->orderBy('continent')
+            ->pluck('continent');
+
+        $conditions = [
+            'Clear',
+            'Cloudy',
+            'Rain',
+            'Fog',
+            'Snow',
+            'Thunderstorm',
+            'Unknown'
+        ];
+
+        return view('weather.index', [
+
+            'weatherLogs' => $weatherLogs,
+
+            'continents' => $continents,
+
+            'conditions' => $conditions,
+
+            'totalCountries' => $this->repository->count(),
+
+            'averageTemperature' => $this->repository->averageTemperature(),
+
+            'highRiskCountries' => $this->repository->highRiskCount(),
+
+            'lastUpdate' => $this->repository->latestUpdate(),
+
+        ]);
     }
 }

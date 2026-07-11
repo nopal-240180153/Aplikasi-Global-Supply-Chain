@@ -5,7 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\SyncController;
-
+use App\Http\Controllers\ExchangeRateController;
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth'])->group(function () {
@@ -39,6 +39,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/sync/weather', [SyncController::class, 'weather'])
     ->name('sync.weather');
+
+    Route::get('/exchange', [ExchangeRateController::class, 'index'])
+    ->name('exchange.index');
+
+    Route::post('/sync/exchange-rate', [SyncController::class, 'exchangeRate'])
+    ->name('sync.exchange-rate');
 });
 
 require __DIR__.'/auth.php';

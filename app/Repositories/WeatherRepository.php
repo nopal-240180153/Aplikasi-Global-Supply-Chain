@@ -7,7 +7,7 @@ use App\Models\WeatherLog;
 class WeatherRepository
 {
     /**
-     * Simpan atau update data cuaca terbaru
+     * Simpan atau update data cuaca
      */
     public function updateOrCreate(array $data): WeatherLog
     {
@@ -25,35 +25,88 @@ class WeatherRepository
                 'weather_condition' => $data['weather_condition'],
                 'recorded_at'       => $data['recorded_at'],
             ]
-
         );
     }
 
     /**
-     * Ambil seluruh data cuaca terbaru
+     * Data monitoring dengan search & filter
      */
-    public function getAll()
-    {
+    public function paginate(
+        int $perPage = 20,
+        ?string $search = null,
+        ?string $continent = null,
+        ?string $condition = null
+    ) {
+
         return WeatherLog::with('country')
+
+            ->when($search, function ($query) use ($search) {
+
+                $query->whereHas('country', function ($q) use ($search) {
+
+                    $q->where('name', 'like', "%{$search}%");
+
+                });
+
+            })
+
+            ->when($continent, function ($query) use ($continent) {
+
+                $query->whereHas('country', function ($q) use ($continent) {
+
+                    $q->where('continent', $continent);
+
+                });
+
+            })
+
+            ->when($condition, function ($query) use ($condition) {
+
+                $query->where('weather_condition', $condition);
+
+            })
+
             ->latest('recorded_at')
-            ->get();
+
+            ->paginate($perPage)
+
+            ->withQueryString();
     }
 
     /**
-     * Pagination untuk halaman monitoring
-     */
-    public function paginate(int $perPage = 20)
-    {
-        return WeatherLog::with('country')
-            ->latest('recorded_at')
-            ->paginate($perPage);
-    }
-
-    /**
-     * Total data cuaca
+     * Total data
      */
     public function count(): int
     {
         return WeatherLog::count();
+    }
+
+    /**
+     * Rata-rata suhu
+     */
+    public function averageTemperature(): float
+    {
+        return round(
+            WeatherLog::avg('temperature') ?? 0,
+            1
+        );
+    }
+
+    /**
+     * Jumlah negara berisiko
+     */
+    public function highRiskCount(): int
+    {
+        return WeatherLog::where('storm_risk', '>', 50)
+            ->count();
+    }
+
+    /**
+     * Update terakhir
+     */
+    public function latestUpdate()
+    {
+        return WeatherLog::latest('recorded_at')
+            ->value('recorded_at');
     }
 }

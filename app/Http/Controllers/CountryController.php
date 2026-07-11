@@ -23,7 +23,7 @@ class CountryController extends Controller
 
         $countries = $query
             ->orderBy('name')
-            ->paginate(20)
+            ->paginate(50)
             ->withQueryString();
 
         $regions = Country::select('region')

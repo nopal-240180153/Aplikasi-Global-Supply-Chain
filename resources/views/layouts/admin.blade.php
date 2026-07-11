@@ -66,6 +66,75 @@
 
         }
 
+        /* Pagination Styling */
+        .pagination {
+            gap: 0.3rem;
+        }
+
+        .pagination .page-link {
+            border: 1px solid #dee2e6;
+            color: #667eea;
+            font-weight: 500;
+            border-radius: 0.35rem;
+            padding: 0.5rem 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .pagination .page-link:hover:not(.disabled) {
+            background-color: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+            background-color: #f8f9fa;
+            cursor: not-allowed;
+        }
+        .stat-card{
+
+    transition:.3s;
+
+}
+
+.stat-card:hover{
+
+    transform:translateY(-6px);
+
+    box-shadow:0 15px 30px rgba(0,0,0,.12)!important;
+
+}
+
+.stat-icon{
+
+    width:70px;
+
+    height:70px;
+
+    border-radius:20px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+.stat-icon i{
+
+    font-size:32px;
+
+    color:#fff;
+
+}
+
     </style>
 
     @stack('styles')

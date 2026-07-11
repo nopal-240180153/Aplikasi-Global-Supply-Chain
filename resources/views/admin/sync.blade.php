@@ -318,7 +318,142 @@
 
                 </div>
 
-            </div>
+            <!-- ================= EXCHANGE RATE ================= -->
+
+<div class="col-lg-6">
+
+    <div class="card shadow-sm border-0 h-100">
+
+        <div class="card-header bg-white">
+
+            <h5 class="mb-0">
+                💱 Exchange Rate
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <p class="text-muted">
+                Sinkronisasi kurs mata uang terbaru dari Exchange Rate API.
+            </p>
+
+            <table class="table table-borderless align-middle">
+
+                <tr>
+
+                    <td width="180">
+                        Status
+                    </td>
+
+                    <td>
+
+                        @if($exchangeRateSync)
+
+                            @if($exchangeRateSync->status == 'Success')
+
+                                <span class="badge bg-success">
+
+                                    Success
+
+                                </span>
+
+                            @elseif($exchangeRateSync->status == 'Running')
+
+                                <span class="badge bg-warning">
+
+                                    Running
+
+                                </span>
+
+                            @else
+
+                                <span class="badge bg-danger">
+
+                                    Failed
+
+                                </span>
+
+                            @endif
+
+                        @else
+
+                            <span class="badge bg-secondary">
+
+                                Belum Pernah
+
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        Last Sync
+                    </td>
+
+                    <td>
+
+                        {{ optional($exchangeRateSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        Total Data
+                    </td>
+
+                    <td>
+
+                        {{ $exchangeRateSync->updated_data ?? 0 }}
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        Durasi
+                    </td>
+
+                    <td>
+
+                        {{ $exchangeRateSync->duration ?? '-' }} detik
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+            <form method="POST"
+                  action="{{ route('sync.exchange-rate') }}">
+
+                @csrf
+
+                <button class="btn btn-warning">
+
+                    <i class="bi bi-currency-exchange"></i>
+
+                    Sinkronisasi Exchange Rate
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
 
         </div>
 

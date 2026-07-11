@@ -6,12 +6,6 @@ return [
     |--------------------------------------------------------------------------
     | Third Party Services
     |--------------------------------------------------------------------------
-    |
-    | This file is for storing the credentials for third party services such
-    | as Mailgun, Postmark, AWS and more. This file provides the de facto
-    | location for this type of information, allowing packages to have
-    | a conventional file to locate the various service credentials.
-    |
     */
 
     'postmark' => [
@@ -34,16 +28,45 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | REST Countries
+    |--------------------------------------------------------------------------
+    */
+
     'restcountries' => [
 
-    'url' => env('REST_COUNTRIES_BASE_URL'),
+        'url' => env('REST_COUNTRIES_BASE_URL'),
 
-    'key' => env('REST_COUNTRIES_API_KEY'),
+        'key' => env('REST_COUNTRIES_API_KEY'),
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Open Meteo
+    |--------------------------------------------------------------------------
+    */
+
     'open_meteo' => [
 
-    'url' => env('OPEN_METEO_BASE_URL'),
+        'url' => env('OPEN_METEO_BASE_URL'),
 
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Exchange Rate API
+    |--------------------------------------------------------------------------
+    */
+
+    'exchange_rate' => [
+
+        'url' => env('EXCHANGE_RATE_BASE_URL'),
+
+        'key' => env('EXCHANGE_RATE_API_KEY'),
+
+    ],
+
 ];

@@ -144,11 +144,13 @@
 
         </a>
 
-        <a href="#">
+        <a href="{{ route('exchange.index') }}"
+   class="{{ request()->routeIs('exchange.*') ? 'active' : '' }}">
 
-            <i class="bi bi-currency-exchange"></i>
+    <i class="bi bi-currency-exchange"></i>
 
-            Nilai Tukar Mata Uang
+    Nilai Tukar Mata Uang
+
 
         </a>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\CountrySyncJob;
 use App\Jobs\WeatherSyncJob;
+use App\Jobs\ExchangeRateSyncJob;
 use App\Models\SyncLog;
 
 class SyncController extends Controller
@@ -21,9 +22,14 @@ class SyncController extends Controller
             ->latest()
             ->first();
 
+        $exchangeRateSync = SyncLog::where('module', 'Exchange Rate')
+            ->latest()
+            ->first();
+
         return view('admin.sync', compact(
             'countrySync',
-            'weatherSync'
+            'weatherSync',
+            'exchangeRateSync'
         ));
     }
 
@@ -54,6 +60,21 @@ class SyncController extends Controller
             ->with(
                 'success',
                 'Sinkronisasi data cuaca sedang diproses di background.'
+            );
+    }
+
+    /**
+     * Sinkronisasi Exchange Rate
+     */
+    public function exchangeRate()
+    {
+        ExchangeRateSyncJob::dispatch();
+
+        return redirect()
+            ->route('admin.sync')
+            ->with(
+                'success',
+                'Sinkronisasi Exchange Rate sedang diproses di background.'
             );
     }
 }
