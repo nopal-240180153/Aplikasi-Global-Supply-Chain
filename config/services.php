@@ -69,4 +69,10 @@ return [
 
     ],
 
+    'world_bank' => [
+
+    'url' => env('WORLD_BANK_BASE_URL'),
+
+    ],
+
 ];

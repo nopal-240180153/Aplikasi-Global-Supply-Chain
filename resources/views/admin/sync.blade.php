@@ -10,7 +10,8 @@
 
         <div>
 
-            <h2 class="fw-bold mb-1">
+            <h2 class="fw-bold">
+                <i class="bi bi-arrow-repeat text-primary"></i>
                 Sinkronisasi Data
             </h2>
 
@@ -23,15 +24,39 @@
     </div>
 
     @if(session('success'))
-        <div class="alert alert-success">
+
+        <div class="alert alert-success alert-dismissible fade show">
+
+            <i class="bi bi-check-circle-fill"></i>
+
             {{ session('success') }}
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+            </button>
+
         </div>
+
     @endif
 
     @if(session('error'))
-        <div class="alert alert-danger">
+
+        <div class="alert alert-danger alert-dismissible fade show">
+
+            <i class="bi bi-exclamation-circle-fill"></i>
+
             {{ session('error') }}
+
+            <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert">
+            </button>
+
         </div>
+
     @endif
 
     <div class="row g-4">
@@ -40,12 +65,14 @@
 
         <div class="col-lg-6">
 
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card shadow border-0 h-100">
 
-                <div class="card-header bg-white">
+                <div class="card-header bg-primary text-white">
 
                     <h5 class="mb-0">
+
                         🌍 Master Data Negara
+
                     </h5>
 
                 </div>
@@ -53,22 +80,26 @@
                 <div class="card-body">
 
                     <p class="text-muted">
+
                         Sinkronisasi seluruh data negara dari REST Countries API.
+
                     </p>
 
-                    <table class="table table-borderless align-middle">
+                    <table class="table table-borderless">
 
                         <tr>
 
-                            <td width="180">
+                            <td width="160">
+
                                 Status
+
                             </td>
 
                             <td>
 
                                 @if($countrySync)
 
-                                    @if($countrySync->status == 'Success')
+                                    @if($countrySync->status=='Success')
 
                                         <span class="badge bg-success">
 
@@ -76,9 +107,9 @@
 
                                         </span>
 
-                                    @elseif($countrySync->status == 'Running')
+                                    @elseif($countrySync->status=='Running')
 
-                                        <span class="badge bg-warning">
+                                        <span class="badge bg-warning text-dark">
 
                                             Running
 
@@ -110,11 +141,7 @@
 
                         <tr>
 
-                            <td>
-
-                                Last Sync
-
-                            </td>
+                            <td>Last Sync</td>
 
                             <td>
 
@@ -126,11 +153,7 @@
 
                         <tr>
 
-                            <td>
-
-                                Total Data
-
-                            </td>
+                            <td>Total Data</td>
 
                             <td>
 
@@ -142,11 +165,7 @@
 
                         <tr>
 
-                            <td>
-
-                                Durasi
-
-                            </td>
+                            <td>Durasi</td>
 
                             <td>
 
@@ -159,11 +178,12 @@
                     </table>
 
                     <form method="POST"
+
                           action="{{ route('sync.countries') }}">
 
                         @csrf
 
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary w-100">
 
                             <i class="bi bi-arrow-repeat"></i>
 
@@ -179,16 +199,18 @@
 
         </div>
 
-        <!-- ================= WEATHER ================= -->
+               <!-- ================= WEATHER ================= -->
 
         <div class="col-lg-6">
 
-            <div class="card shadow-sm border-0 h-100">
+            <div class="card shadow border-0 h-100">
 
-                <div class="card-header bg-white">
+                <div class="card-header bg-success text-white">
 
                     <h5 class="mb-0">
+
                         🌦 Monitoring Cuaca
+
                     </h5>
 
                 </div>
@@ -196,22 +218,266 @@
                 <div class="card-body">
 
                     <p class="text-muted">
+
                         Sinkronisasi data cuaca terbaru dari Open-Meteo API.
+
                     </p>
 
-                    <table class="table table-borderless align-middle">
+                    <table class="table table-borderless">
 
                         <tr>
 
-                            <td width="180">
-                                Status
-                            </td>
+                            <td width="160">Status</td>
 
                             <td>
 
                                 @if($weatherSync)
 
-                                    @if($weatherSync->status == 'Success')
+                                    @if($weatherSync->status=='Success')
+
+                                        <span class="badge bg-success">Success</span>
+
+                                    @elseif($weatherSync->status=='Running')
+
+                                        <span class="badge bg-warning text-dark">Running</span>
+
+                                    @else
+
+                                        <span class="badge bg-danger">Failed</span>
+
+                                    @endif
+
+                                @else
+
+                                    <span class="badge bg-secondary">Belum Pernah</span>
+
+                                @endif
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Last Sync</td>
+
+                            <td>
+
+                                {{ optional($weatherSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Total Data</td>
+
+                            <td>
+
+                                {{ $weatherSync->updated_data ?? 0 }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Durasi</td>
+
+                            <td>
+
+                                {{ $weatherSync->duration ?? '-' }} detik
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <form method="POST"
+
+                          action="{{ route('sync.weather') }}">
+
+                        @csrf
+
+                        <button class="btn btn-success w-100">
+
+                            <i class="bi bi-cloud-arrow-down"></i>
+
+                            Sinkronisasi Cuaca
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="row g-4 mt-1">
+
+        <!-- ================= EXCHANGE RATE ================= -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-header bg-warning">
+
+                    <h5 class="mb-0">
+
+                        💱 Exchange Rate
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p class="text-muted">
+
+                        Sinkronisasi kurs mata uang terbaru dari Exchange Rate API.
+
+                    </p>
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <td width="160">Status</td>
+
+                            <td>
+
+                                @if($exchangeRateSync)
+
+                                    @if($exchangeRateSync->status=='Success')
+
+                                        <span class="badge bg-success">Success</span>
+
+                                    @elseif($exchangeRateSync->status=='Running')
+
+                                        <span class="badge bg-warning text-dark">Running</span>
+
+                                    @else
+
+                                        <span class="badge bg-danger">Failed</span>
+
+                                    @endif
+
+                                @else
+
+                                    <span class="badge bg-secondary">Belum Pernah</span>
+
+                                @endif
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Last Sync</td>
+
+                            <td>
+
+                                {{ optional($exchangeRateSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Total Data</td>
+
+                            <td>
+
+                                {{ $exchangeRateSync->updated_data ?? 0 }}
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td>Durasi</td>
+
+                            <td>
+
+                                {{ $exchangeRateSync->duration ?? '-' }} detik
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <form method="POST"
+
+                          action="{{ route('sync.exchange-rate') }}">
+
+                        @csrf
+
+                        <button class="btn btn-warning w-100">
+
+                            <i class="bi bi-currency-exchange"></i>
+
+                            Sinkronisasi Exchange Rate
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================= ECONOMY ================= -->
+
+        <div class="col-lg-6">
+
+            <div class="card shadow border-0 h-100">
+
+                <div class="card-header bg-info text-white">
+
+                    <h5 class="mb-0">
+
+                        📊 Data Ekonomi
+
+                    </h5>
+
+                </div>
+
+                <div class="card-body">
+
+                    <p class="text-muted">
+
+                        Sinkronisasi data ekonomi global dari World Bank API.
+
+                    </p>
+
+                    <table class="table table-borderless">
+
+                        <tr>
+
+                            <td width="160">
+
+                                Status
+
+                            </td>
+
+                            <td>
+
+                                @if($economySync)
+
+                                    @if($economySync->status == 'Success')
 
                                         <span class="badge bg-success">
 
@@ -219,9 +485,9 @@
 
                                         </span>
 
-                                    @elseif($weatherSync->status == 'Running')
+                                    @elseif($economySync->status == 'Running')
 
-                                        <span class="badge bg-warning">
+                                        <span class="badge bg-warning text-dark">
 
                                             Running
 
@@ -261,7 +527,7 @@
 
                             <td>
 
-                                {{ optional($weatherSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+                                {{ optional($economySync?->finished_at)->format('d M Y H:i') ?? '-' }}
 
                             </td>
 
@@ -277,7 +543,7 @@
 
                             <td>
 
-                                {{ $weatherSync->updated_data ?? 0 }}
+                                {{ $economySync->updated_data ?? 0 }}
 
                             </td>
 
@@ -293,7 +559,7 @@
 
                             <td>
 
-                                {{ $weatherSync->duration ?? '-' }} detik
+                                {{ $economySync->duration ?? '-' }} detik
 
                             </td>
 
@@ -302,15 +568,15 @@
                     </table>
 
                     <form method="POST"
-                          action="{{ route('sync.weather') }}">
+                          action="{{ route('sync.economy') }}">
 
                         @csrf
 
-                        <button class="btn btn-success">
+                        <button class="btn btn-info text-white w-100">
 
-                            <i class="bi bi-cloud-arrow-down"></i>
+                            <i class="bi bi-bar-chart-line-fill"></i>
 
-                            Sinkronisasi Cuaca
+                            Sinkronisasi Data Ekonomi
 
                         </button>
 
@@ -318,142 +584,11 @@
 
                 </div>
 
-            <!-- ================= EXCHANGE RATE ================= -->
-
-<div class="col-lg-6">
-
-    <div class="card shadow-sm border-0 h-100">
-
-        <div class="card-header bg-white">
-
-            <h5 class="mb-0">
-                💱 Exchange Rate
-            </h5>
-
-        </div>
-
-        <div class="card-body">
-
-            <p class="text-muted">
-                Sinkronisasi kurs mata uang terbaru dari Exchange Rate API.
-            </p>
-
-            <table class="table table-borderless align-middle">
-
-                <tr>
-
-                    <td width="180">
-                        Status
-                    </td>
-
-                    <td>
-
-                        @if($exchangeRateSync)
-
-                            @if($exchangeRateSync->status == 'Success')
-
-                                <span class="badge bg-success">
-
-                                    Success
-
-                                </span>
-
-                            @elseif($exchangeRateSync->status == 'Running')
-
-                                <span class="badge bg-warning">
-
-                                    Running
-
-                                </span>
-
-                            @else
-
-                                <span class="badge bg-danger">
-
-                                    Failed
-
-                                </span>
-
-                            @endif
-
-                        @else
-
-                            <span class="badge bg-secondary">
-
-                                Belum Pernah
-
-                            </span>
-
-                        @endif
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>
-                        Last Sync
-                    </td>
-
-                    <td>
-
-                        {{ optional($exchangeRateSync?->finished_at)->format('d M Y H:i') ?? '-' }}
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>
-                        Total Data
-                    </td>
-
-                    <td>
-
-                        {{ $exchangeRateSync->updated_data ?? 0 }}
-
-                    </td>
-
-                </tr>
-
-                <tr>
-
-                    <td>
-                        Durasi
-                    </td>
-
-                    <td>
-
-                        {{ $exchangeRateSync->duration ?? '-' }} detik
-
-                    </td>
-
-                </tr>
-
-            </table>
-
-            <form method="POST"
-                  action="{{ route('sync.exchange-rate') }}">
-
-                @csrf
-
-                <button class="btn btn-warning">
-
-                    <i class="bi bi-currency-exchange"></i>
-
-                    Sinkronisasi Exchange Rate
-
-                </button>
-
-            </form>
+            </div>
 
         </div>
 
     </div>
-
-</div>
 
         </div>
 

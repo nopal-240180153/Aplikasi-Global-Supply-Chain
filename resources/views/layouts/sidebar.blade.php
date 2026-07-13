@@ -136,11 +136,12 @@
 
         </a>
 
-        <a href="#">
+        <a href="{{ route('economy.index') }}"
+        class="{{ request()->routeIs('economy.*') ? 'active' : '' }}">
 
-            <i class="bi bi-graph-up-arrow"></i>
+        <i class="bi bi-graph-up-arrow"></i>
 
-            Data Ekonomi
+        Data Ekonomi
 
         </a>
 

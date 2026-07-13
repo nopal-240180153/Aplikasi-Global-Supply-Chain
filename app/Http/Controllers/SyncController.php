@@ -6,6 +6,7 @@ use App\Jobs\CountrySyncJob;
 use App\Jobs\WeatherSyncJob;
 use App\Jobs\ExchangeRateSyncJob;
 use App\Models\SyncLog;
+use App\Jobs\EconomySyncJob;
 
 class SyncController extends Controller
 {
@@ -25,11 +26,16 @@ class SyncController extends Controller
         $exchangeRateSync = SyncLog::where('module', 'Exchange Rate')
             ->latest()
             ->first();
+        
+        $economySync = SyncLog::where('module', 'Economy')
+    ->latest()
+    ->first();
 
         return view('admin.sync', compact(
             'countrySync',
             'weatherSync',
-            'exchangeRateSync'
+            'exchangeRateSync',
+            'economySync'
         ));
     }
 
@@ -75,6 +81,21 @@ class SyncController extends Controller
             ->with(
                 'success',
                 'Sinkronisasi Exchange Rate sedang diproses di background.'
+            );
+    }
+
+    /**
+     * Sinkronisasi Data Ekonomi
+     */
+    public function economy()
+    {
+        EconomySyncJob::dispatch();
+
+        return redirect()
+            ->route('admin.sync')
+            ->with(
+                'success',
+                'Sinkronisasi data ekonomi sedang diproses di background.'
             );
     }
 }
