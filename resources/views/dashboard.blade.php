@@ -17,174 +17,129 @@
         </p>
     </div>
 
-    <!-- KPI -->
-    <div class="row g-4 mb-4">
+   <!-- KPI -->
+<div class="row g-4 mb-4">
 
-        <!-- Negara -->
-        <div class="col-lg-3 col-md-6">
+    <!-- Negara -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body">
 
-            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="d-flex justify-content-between align-items-center">
 
-                <div class="card-body">
+                    <div>
 
-                    <div class="d-flex justify-content-between">
+                        <small class="text-muted">
+                            Total Negara
+                        </small>
 
-                        <div>
+                        <h2 class="fw-bold mt-2 mb-0">
+                            {{ number_format($totalCountries) }}
+                        </h2>
 
-                            <small class="text-muted">
-                                Total Negara
-                            </small>
+                    </div>
 
-                            <h2 class="fw-bold mt-2">
-                                {{ number_format($totalCountries) }}
-                            </h2>
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-3">
 
-                        </div>
-
-                        <div class="display-5 text-primary">
-
-                            🌍
-
-                        </div>
+                        <i class="bi bi-globe2 fs-2 text-primary"></i>
 
                     </div>
 
                 </div>
 
             </div>
-
         </div>
-
-        <!-- Benua -->
-        <div class="col-lg-3 col-md-6">
-
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between">
-
-                        <div>
-
-                            <small class="text-muted">
-                                Total Benua
-                            </small>
-
-                            <h2 class="fw-bold mt-2">
-
-                                {{ $totalContinents }}
-
-                            </h2>
-
-                        </div>
-
-                        <div class="display-5 text-success">
-
-                            🌎
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- Risk -->
-        <div class="col-lg-3 col-md-6">
-
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-
-                <div class="card-body">
-
-                    <div class="d-flex justify-content-between">
-
-                        <div>
-
-                            <small class="text-muted">
-                                Global Risk
-                            </small>
-
-                            <h2 class="fw-bold text-success mt-2">
-
-                                {{ strtoupper($globalRisk) }}
-
-                            </h2>
-
-                        </div>
-
-                        <div class="display-5 text-warning">
-
-                            ⚠️
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-lg-3 col-md-6">
-            <div class="card border-0 shadow-sm rounded-4 h-100">
-                <div class="card-body">
-                    <small class="text-muted">Current Time</small>
-                    <div id="currentTime" class="fs-4 fw-bold text-primary mt-3">--:--:-- WIB</div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Map -->
+    <!-- Weather -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body">
 
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center">
 
-        <div class="card-header bg-white">
+                    <div>
 
-            <h5 class="fw-bold mb-0">
+                        <small class="text-muted">
+                            Weather Logs
+                        </small>
 
-                🌍 Peta Monitoring Global
+                        <h2 class="fw-bold mt-2 mb-0">
+                            {{ number_format($totalWeather) }}
+                        </h2>
 
-            </h5>
+                    </div>
 
-        </div>
+                    <div class="bg-success bg-opacity-10 rounded-circle p-3">
 
-        <div class="card-body">
+                        <i class="bi bi-cloud-sun fs-2 text-success"></i>
 
-            <div id="map"
-                 style="height:500px;border-radius:15px;">
+                    </div>
+
+                </div>
 
             </div>
-
         </div>
-
     </div>
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white">
-                    <h5 class="fw-bold mb-0">Distribusi Negara per Benua</h5>
+    <!-- Exchange -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <small class="text-muted">
+                            Exchange Rate
+                        </small>
+
+                        <h2 class="fw-bold mt-2 mb-0">
+                            {{ number_format($totalExchange) }}
+                        </h2>
+
+                    </div>
+
+                    <div class="bg-warning bg-opacity-10 rounded-circle p-3">
+
+                        <i class="bi bi-currency-exchange fs-2 text-warning"></i>
+
+                    </div>
+
                 </div>
-                <div class="card-body">
-                    <canvas id="continentChart" height="120"></canvas>
-                </div>
+
             </div>
         </div>
+    </div>
 
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm rounded-4">
-                <div class="card-header bg-white">
-                    <h5 class="fw-bold mb-0">Risk Distribution</h5>
+    <!-- Economy -->
+    <div class="col-lg-3 col-md-6">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
+            <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-center">
+
+                    <div>
+
+                        <small class="text-muted">
+                            Economy Records
+                        </small>
+
+                        <h2 class="fw-bold mt-2 mb-0">
+                            {{ number_format($totalEconomy) }}
+                        </h2>
+
+                    </div>
+
+                    <div class="bg-info bg-opacity-10 rounded-circle p-3">
+
+                        <i class="bi bi-bar-chart-line fs-2 text-info"></i>
+
+                    </div>
+
                 </div>
-                <div class="card-body">
-                    <canvas id="riskChart"></canvas>
-                </div>
+
             </div>
         </div>
     </div>

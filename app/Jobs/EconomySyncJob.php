@@ -15,11 +15,17 @@ class EconomySyncJob implements ShouldQueue
         //
     }
 
+    /**
+     * @throws \Exception
+     */
     public function handle(
         EconomySyncService $economySyncService
     ): void {
+        $result = $economySyncService->sync();
 
-        $economySyncService->sync();
+        if (isset($result['success']) && !$result['success']) {
+            throw new \Exception($result['message'] ?? 'Sinkronisasi gagal pada EconomySyncService.');
+        }
 
     }
 }

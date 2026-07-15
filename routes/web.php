@@ -7,6 +7,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\SyncController;
 use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\EconomyController;
+use App\Http\Controllers\RiskController;
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth'])->group(function () {
@@ -52,6 +53,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/economy', [EconomyController::class, 'index'])
     ->name('economy.index');
+
+    Route::get('/risk', [RiskController::class, 'index'])
+    ->name('risk.index');
+
+    Route::post('/sync/risk', [SyncController::class, 'risk'])
+    ->name('sync.risk');
 });
 
 require __DIR__.'/auth.php';

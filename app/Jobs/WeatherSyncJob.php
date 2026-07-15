@@ -15,8 +15,15 @@ class WeatherSyncJob implements ShouldQueue
         //
     }
 
+    /**
+     * @throws \Exception
+     */
     public function handle(WeatherSyncService $weatherSyncService): void
     {
-        $weatherSyncService->sync();
+        $result = $weatherSyncService->sync();
+        
+        if (isset($result['success']) && !$result['success']) {
+            throw new \Exception($result['message'] ?? 'Sinkronisasi gagal pada WeatherSyncService.');
+        }
     }
 }

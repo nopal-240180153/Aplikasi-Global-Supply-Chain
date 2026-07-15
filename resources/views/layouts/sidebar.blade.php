@@ -168,7 +168,8 @@
             Analisis
         </div>
 
-        <a href="#">
+        <a href="{{ route('risk.index') }}"
+           class="{{ request()->routeIs('risk.*') ? 'active' : '' }}">
 
             <i class="bi bi-exclamation-triangle"></i>
 

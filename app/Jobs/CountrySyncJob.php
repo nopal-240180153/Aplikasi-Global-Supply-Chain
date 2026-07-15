@@ -15,8 +15,15 @@ class CountrySyncJob implements ShouldQueue
         //
     }
 
+    /**
+     * @throws \Exception
+     */
     public function handle(CountrySyncService $countrySyncService): void
     {
-        $countrySyncService->sync();
+        $result = $countrySyncService->sync();
+        
+        if (isset($result['success']) && !$result['success']) {
+            throw new \Exception($result['message'] ?? 'Sinkronisasi gagal pada CountrySyncService.');
+        }
     }
 }

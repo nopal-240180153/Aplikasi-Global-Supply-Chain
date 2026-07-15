@@ -34,4 +34,18 @@ class EconomyRepository
     {
         return EconomyData::count();
     }
+
+    /**
+     * Update atau Create data ekonomi
+     */
+    public function updateOrCreate(array $data)
+    {
+        return EconomyData::updateOrCreate(
+            [
+                'country_id' => $data['country_id'],
+                'year'       => $data['year'],
+            ],
+            $data
+        );
+    }
 }

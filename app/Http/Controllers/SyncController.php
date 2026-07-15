@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Jobs\CountrySyncJob;
 use App\Jobs\WeatherSyncJob;
 use App\Jobs\ExchangeRateSyncJob;
-use App\Models\SyncLog;
 use App\Jobs\EconomySyncJob;
+use App\Jobs\RiskSyncJob;
+use App\Models\SyncLog;
 
 class SyncController extends Controller
 {
@@ -26,16 +27,21 @@ class SyncController extends Controller
         $exchangeRateSync = SyncLog::where('module', 'Exchange Rate')
             ->latest()
             ->first();
-        
+
         $economySync = SyncLog::where('module', 'Economy')
-    ->latest()
-    ->first();
+            ->latest()
+            ->first();
+
+        $riskSync = SyncLog::where('module', 'Risk')
+            ->latest()
+            ->first();
 
         return view('admin.sync', compact(
             'countrySync',
             'weatherSync',
             'exchangeRateSync',
-            'economySync'
+            'economySync',
+            'riskSync'
         ));
     }
 
@@ -96,6 +102,21 @@ class SyncController extends Controller
             ->with(
                 'success',
                 'Sinkronisasi data ekonomi sedang diproses di background.'
+            );
+    }
+
+    /**
+     * Sinkronisasi Analisis Risiko
+     */
+    public function risk()
+    {
+        RiskSyncJob::dispatch();
+
+        return redirect()
+            ->route('admin.sync')
+            ->with(
+                'success',
+                'Sinkronisasi Analisis Risiko sedang diproses di background.'
             );
     }
 }

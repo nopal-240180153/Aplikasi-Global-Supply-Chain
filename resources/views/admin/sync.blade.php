@@ -317,9 +317,7 @@
 
         </div>
 
-    </div>
-
-    <div class="row g-4 mt-1">
+    <!-- Row continues -->
 
         <!-- ================= EXCHANGE RATE ================= -->
 
@@ -588,7 +586,141 @@
 
         </div>
 
-    </div>
+    <!-- Row continues -->
+
+    <!-- ================= ANALISIS RISIKO ================= -->
+
+    <div class="col-lg-6">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-header bg-danger text-white">
+
+                <h5 class="mb-0">
+
+                    ⚠️ Analisis Risiko Supply Chain
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <p class="text-muted">
+
+                    Menghitung tingkat risiko rantai pasok berdasarkan
+                    data cuaca, ekonomi, nilai tukar, dan berita.
+
+                </p>
+
+                <table class="table table-borderless">
+
+                    <tr>
+
+                        <td width="160">
+
+                            Status
+
+                        </td>
+
+                        <td>
+
+                            @if(isset($riskSync))
+
+                                @if($riskSync->status == 'Success')
+
+                                    <span class="badge bg-success">
+
+                                        Success
+
+                                    </span>
+
+                                @elseif($riskSync->status == 'Processing')
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Processing
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge bg-danger">
+
+                                        Failed
+
+                                    </span>
+
+                                @endif
+
+                            @else
+
+                                <span class="badge bg-secondary">
+
+                                    Belum Pernah
+
+                                </span>
+
+                            @endif
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Last Sync</td>
+
+                        <td>
+
+                            {{ optional($riskSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Total Data</td>
+
+                        <td>
+
+                            {{ $riskSync->updated_data ?? 0 }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Durasi</td>
+
+                        <td>
+
+                            {{ $riskSync->duration ?? '-' }} detik
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+                <form method="POST"
+                      action="{{ route('sync.risk') }}">
+
+                    @csrf
+
+                    <button class="btn btn-danger w-100">
+
+                        <i class="bi bi-shield-exclamation"></i>
+
+                        Sinkronisasi Analisis Risiko
+
+                    </button>
+
+                </form>
+
+            </div>
 
         </div>
 
@@ -596,4 +728,5 @@
 
 </div>
 
+</div>
 @endsection

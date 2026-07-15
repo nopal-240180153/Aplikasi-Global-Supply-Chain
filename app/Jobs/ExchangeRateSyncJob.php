@@ -15,10 +15,17 @@ class ExchangeRateSyncJob implements ShouldQueue
         //
     }
 
+    /**
+     * @throws \Exception
+     */
     public function handle(
         ExchangeRateSyncService $exchangeRateSyncService
     ): void
     {
-        $exchangeRateSyncService->sync();
+        $result = $exchangeRateSyncService->sync();
+        
+        if (isset($result['success']) && !$result['success']) {
+            throw new \Exception($result['message'] ?? 'Sinkronisasi gagal pada ExchangeRateSyncService.');
+        }
     }
 }
