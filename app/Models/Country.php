@@ -55,4 +55,24 @@ class Country extends Model
     {
         return $this->hasMany(ExchangeRate::class);
     }
+
+    public function newsArticles()
+    {
+        return $this->hasMany(NewsArticle::class);
+    }
+
+    public function getWeatherTempAttribute()
+    {
+        return $this->weatherLogs()->latest('recorded_at')->value('temperature');
+    }
+
+    public function getInflationRateAttribute()
+    {
+        return $this->economyData()->orderByDesc('year')->value('inflation');
+    }
+
+    public function getExchangeRateAttribute()
+    {
+        return $this->exchangeRates()->latest('recorded_at')->value('exchange_rate');
+    }
 }

@@ -155,7 +155,8 @@
 
         </a>
 
-        <a href="#">
+        <a href="{{ route('news.index') }}"
+           class="{{ request()->routeIs('news.*') ? 'active' : '' }}">
 
             <i class="bi bi-newspaper"></i>
 

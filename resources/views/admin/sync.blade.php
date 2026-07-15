@@ -725,7 +725,142 @@
         </div>
 
     </div>
+    <!-- ================= BERITA ================= -->
 
+    <div class="col-lg-6">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-header bg-secondary text-white">
+
+                <h5 class="mb-0">
+
+                    📰 Sinkronisasi Berita
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <p class="text-muted">
+
+                    Mengambil berita global terbaru berdasarkan negara.
+
+                </p>
+
+                <table class="table table-borderless">
+
+                    <tr>
+
+                        <td width="160">
+
+                            Status
+
+                        </td>
+
+                        <td>
+
+                            @if($newsSync)
+
+                                @if($newsSync->status == 'Success')
+
+                                    <span class="badge bg-success">
+
+                                        Success
+
+                                    </span>
+
+                                @elseif($newsSync->status == 'Running')
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Running
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge bg-danger">
+
+                                        Failed
+
+                                    </span>
+
+                                @endif
+
+                            @else
+
+                                <span class="badge bg-secondary">
+
+                                    Belum Pernah
+
+                                </span>
+
+                            @endif
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Last Sync</td>
+
+                        <td>
+
+                            {{ optional($newsSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Total Data</td>
+
+                        <td>
+
+                            {{ $newsSync->updated_data ?? 0 }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Durasi</td>
+
+                        <td>
+
+                            {{ $newsSync->duration ?? '-' }} detik
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+                <form method="POST"
+                      action="{{ route('sync.news') }}">
+
+                    @csrf
+
+                    <button class="btn btn-secondary w-100">
+
+                        <i class="bi bi-newspaper"></i>
+
+                        Sinkronisasi Berita
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 </div>
 
 </div>

@@ -6,6 +6,7 @@ use App\Models\Country;
 use App\Models\EconomyData;
 use App\Models\ExchangeRate;
 use App\Models\WeatherLog;
+use App\Models\NewsArticle;
 use App\Repositories\RiskRepository;
 use Carbon\Carbon;
 
@@ -36,7 +37,7 @@ class RiskSyncService
 
             /*
             |--------------------------------------------------------------------------
-            | Data Cuaca Terbaru
+            | Data Cuaca
             |--------------------------------------------------------------------------
             */
 
@@ -46,7 +47,7 @@ class RiskSyncService
 
             /*
             |--------------------------------------------------------------------------
-            | Data Ekonomi Terbaru
+            | Data Ekonomi
             |--------------------------------------------------------------------------
             */
 
@@ -56,7 +57,7 @@ class RiskSyncService
 
             /*
             |--------------------------------------------------------------------------
-            | Data Nilai Tukar Terbaru
+            | Data Nilai Tukar
             |--------------------------------------------------------------------------
             */
 
@@ -66,29 +67,42 @@ class RiskSyncService
 
             /*
             |--------------------------------------------------------------------------
-            | Susun Data
+            | Hitung News Score
+            |--------------------------------------------------------------------------
+            */
+
+            $newsScore = NewsArticle::where('country_id', $country->id)
+                ->avg('sentiment_score');
+
+            if ($newsScore === null) {
+                $newsScore = 0;
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Payload
             |--------------------------------------------------------------------------
             */
 
             $payload = [
 
                 // Weather
-                'temperature' => $weather?->temperature,
-                'rainfall' => $weather?->rainfall,
-                'wind_speed' => $weather?->wind_speed,
-                'storm_risk' => $weather?->storm_risk,
+                'temperature'   => $weather?->temperature,
+                'rainfall'      => $weather?->rainfall,
+                'wind_speed'    => $weather?->wind_speed,
+                'storm_risk'    => $weather?->storm_risk,
 
                 // Economy
-                'inflation' => $economy?->inflation,
-                'gdp' => $economy?->gdp,
-                'exports' => $economy?->exports,
-                'imports' => $economy?->imports,
+                'inflation'     => $economy?->inflation,
+                'gdp'           => $economy?->gdp,
+                'exports'       => $economy?->exports,
+                'imports'       => $economy?->imports,
 
                 // Exchange
                 'exchange_rate' => $exchange?->exchange_rate,
 
-                // News (sementara)
-                'news_score' => 0,
+                // News
+                'news_score'    => $newsScore,
 
             ];
 
@@ -116,19 +130,19 @@ class RiskSyncService
 
                 [
 
-                    'weather_score' => $risk['weather_score'],
+                    'weather_score'  => $risk['weather_score'],
 
-                    'economy_score' => $risk['economy_score'],
+                    'economy_score'  => $risk['economy_score'],
 
                     'exchange_score' => $risk['exchange_score'],
 
-                    'news_score' => $risk['news_score'],
+                    'news_score'     => $risk['news_score'],
 
-                    'total_score' => $risk['total_score'],
+                    'total_score'    => $risk['total_score'],
 
-                    'risk_level' => $risk['risk_level'],
+                    'risk_level'     => $risk['risk_level'],
 
-                    'calculated_at' => Carbon::now(),
+                    'calculated_at'  => Carbon::now(),
 
                 ]
 

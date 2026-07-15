@@ -8,6 +8,7 @@ use App\Http\Controllers\SyncController;
 use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\EconomyController;
 use App\Http\Controllers\RiskController;
+use App\Http\Controllers\NewsController;
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth'])->group(function () {
@@ -59,6 +60,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/sync/risk', [SyncController::class, 'risk'])
     ->name('sync.risk');
+
+    Route::get('/news', [NewsController::class, 'index'])
+    ->name('news.index');
+    Route::post('/sync/news', [SyncController::class, 'news'])
+    ->name('sync.news');
 });
 
 require __DIR__.'/auth.php';
