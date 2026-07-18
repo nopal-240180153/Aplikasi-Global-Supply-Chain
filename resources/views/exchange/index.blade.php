@@ -13,7 +13,7 @@
         <div>
 
             <h2 class="fw-bold mb-1">
-                Nilai Tukar Mata Uang
+                💱 Nilai Tukar Mata Uang
             </h2>
 
             <p class="text-muted mb-0">
@@ -26,14 +26,12 @@
 
     <!-- Statistik -->
 
-    <!-- ===================== STATISTIC CARD ===================== -->
-
     <div class="row g-4 mb-4">
 
         <!-- Total Exchange -->
         <div class="col-xl-3 col-md-6">
 
-            <div class="card border-0 shadow-sm rounded-4 h-100 stat-card">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
 
                 <div class="card-body">
 
@@ -42,7 +40,7 @@
                         <div>
 
                             <small class="text-muted fw-semibold">
-                                Total Exchange
+                                Total Nilai Tukar
                             </small>
 
                             <h2 class="fw-bold mt-2 mb-1">
@@ -56,10 +54,8 @@
 
                         </div>
 
-                        <div class="stat-icon bg-primary">
-
+                        <div class="text-primary fs-2">
                             <i class="bi bi-currency-exchange"></i>
-
                         </div>
 
                     </div>
@@ -74,7 +70,7 @@
 
         <div class="col-xl-3 col-md-6">
 
-            <div class="card border-0 shadow-sm rounded-4 h-100 stat-card">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
 
                 <div class="card-body">
 
@@ -84,7 +80,7 @@
 
                             <small class="text-muted fw-semibold">
 
-                                Currency
+                                Mata Uang
 
                             </small>
 
@@ -102,7 +98,7 @@
 
                         </div>
 
-                        <div class="stat-icon bg-success">
+                        <div class="text-success fs-2">
 
                             <i class="bi bi-cash-stack"></i>
 
@@ -120,7 +116,7 @@
 
         <div class="col-xl-3 col-md-6">
 
-            <div class="card border-0 shadow-sm rounded-4 h-100 stat-card">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
 
                 <div class="card-body">
 
@@ -130,7 +126,7 @@
 
                             <small class="text-muted fw-semibold">
 
-                                Average Rate
+                                Kurs Rata-rata
 
                             </small>
 
@@ -142,13 +138,13 @@
 
                             <span class="text-warning small">
 
-                                Exchange Rate
+                                Nilai Tukar
 
                             </span>
 
                         </div>
 
-                        <div class="stat-icon bg-warning">
+                        <div class="text-warning fs-2">
 
                             <i class="bi bi-graph-up-arrow"></i>
 
@@ -166,7 +162,7 @@
 
         <div class="col-xl-3 col-md-6">
 
-            <div class="card border-0 shadow-sm rounded-4 h-100 stat-card">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
 
                 <div class="card-body">
 
@@ -176,7 +172,7 @@
 
                             <small class="text-muted fw-semibold">
 
-                                Last Update
+                                Pembaruan Terakhir
 
                             </small>
 
@@ -194,7 +190,7 @@
 
                         </div>
 
-                        <div class="stat-icon bg-danger">
+                        <div class="text-danger fs-2">
 
                             <i class="bi bi-clock-history"></i>
 
@@ -210,131 +206,82 @@
 
     </div>
 
-    <!-- Placeholder Grafik -->
+    <!-- Grafik -->
 
     <div class="card border-0 shadow-sm rounded-4 mb-4">
 
-        <div class="card-header bg-white">
+        <div class="card-header bg-white border-0 pt-4 pb-3">
 
-            <strong>
+            <h5 class="fw-bold mb-0">
 
-                Visualisasi Nilai Tukar Mata Uang
+                Visualisasi Nilai Tukar Mata Uang (Top 10)
 
-            </strong>
+            </h5>
 
         </div>
 
         <div class="card-body">
 
-    <canvas id="exchangeChart" height="110"></canvas>
-
-</div>
-<!-- ===================== TOOLBAR ===================== -->
-
-<div class="card border-0 shadow-sm rounded-4 mb-4">
-
-    <div class="card-body">
-
-        <div class="row g-3 align-items-center">
-
-            <!-- Search -->
-
-            <div class="col-lg-4">
-
-                <div class="input-group">
-
-                    <span class="input-group-text bg-white">
-
-                        <i class="bi bi-search"></i>
-
-                    </span>
-
-                    <input
-                        type="text"
-                        id="searchInput"
-                        class="form-control"
-                        placeholder="Cari Negara...">
-
-                </div>
-
-            </div>
-
-            <!-- Currency -->
-
-            <div class="col-lg-3">
-
-                <select
-                    id="currencyFilter"
-                    class="form-select">
-
-                    <option value="">
-
-                        Semua Currency
-
-                    </option>
-
-                    @foreach($exchangeRates->unique('target_currency') as $rate)
-
-                        <option>
-
-                            {{ $rate->target_currency }}
-
-                        </option>
-
-                    @endforeach
-
-                </select>
-
-            </div>
-
-            <!-- Refresh -->
-
-            <div class="col-lg-2">
-
-                <a href="{{ route('exchange.index') }}"
-                   class="btn btn-primary w-100">
-
-                    <i class="bi bi-arrow-clockwise"></i>
-
-                    Refresh
-
-                </a>
-
-            </div>
-
-            <!-- Export -->
-
-            <div class="col-lg-3">
-
-                <button
-                    class="btn btn-success w-100">
-
-                    <i class="bi bi-download"></i>
-
-                    Export Excel
-
-                </button>
-
-            </div>
+            <canvas id="exchangeChart" height="110"></canvas>
 
         </div>
 
     </div>
 
-</div>
+    <!-- Filter Section -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('exchange.index') }}">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold">Cari Negara</label>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="form-control" 
+                            placeholder="Ketik nama negara..."
+                            value="{{ request('search') }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Mata Uang</label>
+                        <select name="currency" class="form-select">
+                            <option value="">Semua Currency</option>
+                            @foreach($exchangeRates->unique('target_currency') as $rate)
+                                <option value="{{ $rate->target_currency }}" {{ request('currency') == $rate->target_currency ? 'selected' : '' }}>
+                                    {{ $rate->target_currency }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Cari
+                        </button>
+                    </div>
+                </div>
+                @if(request()->hasAny(['search', 'currency']))
+                    <div class="mt-3">
+                        <a href="{{ route('exchange.index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Atur Ulang Filter
+                        </a>
+                    </div>
+                @endif
+            </form>
+        </div>
     </div>
 
     <!-- Tabel -->
 
     <div class="card border-0 shadow-sm rounded-4">
 
-        <div class="card-header bg-white">
+        <div class="card-header bg-white border-0 pt-4 pb-3">
 
-            <strong>
-
-                Data Nilai Tukar Mata Uang
-
-            </strong>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Data Nilai Tukar Mata Uang</h5>
+                @if($exchangeRates->total() > 0)
+                    <span class="badge bg-primary">{{ $exchangeRates->total() }} Data</span>
+                @endif
+            </div>
 
         </div>
 
@@ -342,7 +289,7 @@
 
             <div class="table-responsive">
 
-                <table class="table table-hover align-middle mb-0" id="exchangeTable">
+                <table class="table table-hover align-middle mb-0">
 
                     <thead class="table-light">
 
@@ -380,7 +327,7 @@
 
                                     @endif
 
-                                    {{ $exchange->country->name }}
+                                    <strong>{{ $exchange->country->name }}</strong>
 
                                 </div>
 
@@ -398,11 +345,11 @@
 
                             <td>
 
-                                {{ $exchange->base_currency }}
+                                <span class="badge bg-secondary">{{ $exchange->base_currency }}</span>
 
                             </td>
 
-                            <td class="fw-bold">
+                            <td class="fw-bold text-primary">
 
                                 {{ number_format($exchange->exchange_rate,4) }}
 
@@ -422,7 +369,10 @@
 
                             <td colspan="5" class="text-center py-5">
 
-                                Belum ada data nilai tukar.
+                                <div class="text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    Tidak ada data nilai tukar yang sesuai dengan filter.
+                                </div>
 
                             </td>
 
@@ -438,15 +388,16 @@
 
         </div>
 
-    </div>
-
-    <div class="mt-4">
-
-        {{ $exchangeRates->links() }}
+        @if($exchangeRates->hasPages())
+            <div class="card-footer bg-white border-0">
+                {{ $exchangeRates->links() }}
+            </div>
+        @endif
 
     </div>
 
 </div>
+
 @push('scripts')
 
 <script>
@@ -471,7 +422,7 @@ new Chart(ctx, {
 
         datasets: [{
 
-            label: 'Exchange Rate',
+            label: 'Nilai Tukar',
 
             data: [
 
@@ -544,22 +495,7 @@ new Chart(ctx, {
 });
 
 </script>
-<script>
 
-document.getElementById('searchInput').addEventListener('keyup', function(){
-
-    let value = this.value.toLowerCase();
-
-    document.querySelectorAll('#exchangeTable tbody tr').forEach(function(row){
-
-        row.style.display = row.innerText.toLowerCase().includes(value)
-            ? ''
-            : 'none';
-
-    });
-
-});
-
-</script>
 @endpush
+
 @endsection

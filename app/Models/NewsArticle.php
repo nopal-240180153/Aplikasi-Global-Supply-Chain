@@ -19,6 +19,10 @@ class NewsArticle extends Model
 
         'url',
 
+        'image_url',
+
+        'description',
+
         'summary',
 
         'sentiment',

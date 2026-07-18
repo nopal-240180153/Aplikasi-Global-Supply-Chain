@@ -8,6 +8,7 @@ use App\Jobs\ExchangeRateSyncJob;
 use App\Jobs\EconomySyncJob;
 use App\Jobs\RiskSyncJob;
 use App\Jobs\NewsSyncJob;
+use App\Jobs\PortSyncJob;
 use App\Models\SyncLog;
 
 class SyncController extends Controller
@@ -41,13 +42,18 @@ class SyncController extends Controller
             ->latest()
             ->first();
 
+        $portSync = SyncLog::where('module', 'Ports')
+            ->latest()
+            ->first();
+
         return view('admin.sync', compact(
             'countrySync',
             'weatherSync',
             'exchangeRateSync',
             'economySync',
             'riskSync',
-            'newsSync'
+            'newsSync',
+            'portSync'
         ));
     }
 
@@ -138,6 +144,21 @@ class SyncController extends Controller
             ->with(
                 'success',
                 'Sinkronisasi berita sedang diproses di background.'
+            );
+    }
+
+    /**
+     * Sinkronisasi Pelabuhan
+     */
+    public function ports()
+    {
+        PortSyncJob::dispatch();
+
+        return redirect()
+            ->route('admin.sync')
+            ->with(
+                'success',
+                'Sinkronisasi data pelabuhan sedang diproses di background.'
             );
     }
 }

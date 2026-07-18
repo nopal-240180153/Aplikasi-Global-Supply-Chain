@@ -7,7 +7,7 @@
 
     <!-- Header -->
     <div class="mb-4">
-        <h2 class="fw-bold mb-1 text-dark">Analisis Risiko</h2>
+        <h2 class="fw-bold mb-1 text-dark">⚠️ Analisis Risiko</h2>
         <p class="text-muted">Menampilkan hasil analisis tingkat risiko rantai pasok setiap negara berdasarkan kondisi cuaca, ekonomi, nilai tukar, dan berita.</p>
     </div>
 
@@ -75,16 +75,54 @@
         </div>
     </div>
 
+    <!-- Filter Section -->
+    <div class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('risk.index') }}">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold">Cari Negara</label>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="form-control" 
+                            placeholder="Ketik nama negara..."
+                            value="{{ request('search') }}">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Level Risiko</label>
+                        <select name="risk_level" class="form-select">
+                            <option value="">Semua Level</option>
+                            <option value="Rendah" {{ request('risk_level') == 'Rendah' ? 'selected' : '' }}>Rendah</option>
+                            <option value="Sedang" {{ request('risk_level') == 'Sedang' ? 'selected' : '' }}>Sedang</option>
+                            <option value="Tinggi" {{ request('risk_level') == 'Tinggi' ? 'selected' : '' }}>Tinggi</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Cari
+                        </button>
+                    </div>
+                </div>
+                @if(request()->hasAny(['search', 'risk_level']))
+                    <div class="mt-3">
+                        <a href="{{ route('risk.index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Atur Ulang Filter
+                        </a>
+                    </div>
+                @endif
+            </form>
+        </div>
+    </div>
+
     <!-- Tabel Analisis Risiko -->
     <div class="card border-0 shadow-sm rounded-3 mb-4">
         <div class="card-header bg-white pt-3 pb-3 border-bottom">
-            <div class="row align-items-center">
-                <div class="col-md-8">
-                    <h6 class="mb-0 fw-bold text-dark">Data Risiko Negara</h6>
-                </div>
-                <div class="col-md-4">
-                    <input type="text" id="searchRisk" class="form-control form-control-sm" placeholder="Cari nama negara...">
-                </div>
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0 fw-bold text-dark">Data Risiko Negara</h6>
+                @if($risks->total() > 0)
+                    <span class="badge bg-primary">{{ $risks->total() }} Data</span>
+                @endif
             </div>
         </div>
         <div class="card-body p-0">
@@ -93,9 +131,6 @@
                     <thead class="table-light">
                         <tr>
                             <th class="ps-4">Negara</th>
-                            <th>Cuaca</th>
-                            <th>Inflasi</th>
-                            <th>Nilai Tukar</th>
                             <th>Skor Cuaca</th>
                             <th>Skor Ekonomi</th>
                             <th>Skor Kurs</th>
@@ -107,18 +142,32 @@
                     </thead>
                     <tbody>
                         @forelse($risks as $risk)
-                        <tr class="risk-row">
+                        <tr>
                             <td class="ps-4">
-                                <div class="fw-semibold text-dark country-name">{{ $risk->country->name }}</div>
+                                <div class="d-flex align-items-center">
+                                    @if($risk->country->flag)
+                                        <img src="{{ $risk->country->flag }}"
+                                             width="30"
+                                             class="rounded me-2">
+                                    @endif
+                                    <strong class="text-dark">{{ $risk->country->name }}</strong>
+                                </div>
                             </td>
-                            <td>{{ $risk->country->weather_temp ?? '-' }}&deg;C</td>
-                            <td>{{ $risk->country->inflation_rate ?? '-' }}%</td>
-                            <td>{{ $risk->country->exchange_rate ?? '-' }}</td>
-                            <td>{{ number_format($risk->weather_score, 1) }}</td>
-                            <td>{{ number_format($risk->economy_score, 1) }}</td>
-                            <td>{{ number_format($risk->exchange_score, 1) }}</td>
-                            <td>{{ number_format($risk->news_score, 1) }}</td>
-                            <td class="fw-bold">{{ number_format($risk->total_score, 1) }}</td>
+                            <td>
+                                <span class="badge bg-info">{{ number_format($risk->weather_score, 1) }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-warning text-dark">{{ number_format($risk->economy_score, 1) }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ number_format($risk->exchange_score, 1) }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-secondary">{{ number_format($risk->news_score, 1) }}</span>
+                            </td>
+                            <td>
+                                <strong class="text-dark">{{ number_format($risk->total_score, 1) }}</strong>
+                            </td>
                             <td>
                                 @if($risk->risk_level == 'Rendah')
                                     <span class="badge bg-success">Rendah</span>
@@ -145,16 +194,23 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="11" class="text-center py-4 text-muted">Belum ada data analisis risiko.</td>
+                            <td colspan="8" class="text-center py-4">
+                                <div class="text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    Tidak ada data risiko yang sesuai dengan filter.
+                                </div>
+                            </td>
                         </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="card-footer bg-white border-0 pt-3 pb-3">
-            {{ $risks->links('pagination::bootstrap-5') }}
-        </div>
+        @if($risks->hasPages())
+            <div class="card-footer bg-white border-0 pt-3 pb-3">
+                {{ $risks->links('pagination::bootstrap-5') }}
+            </div>
+        @endif
     </div>
 
     <!-- Grafik -->
@@ -177,7 +233,7 @@
     <div class="modal-content border-0 rounded-3 shadow">
       <div class="modal-header bg-light border-bottom-0">
         <h5 class="modal-title fw-bold text-dark" id="detailModalLabel">Detail Analisis Risiko</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
       </div>
       <div class="modal-body p-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -240,24 +296,6 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // Fitur Pencarian Negara
-    const searchRisk = document.getElementById('searchRisk');
-    const riskRows = document.querySelectorAll('.risk-row');
-
-    if (searchRisk) {
-        searchRisk.addEventListener('keyup', function() {
-            const query = this.value.toLowerCase();
-            riskRows.forEach(row => {
-                const countryName = row.querySelector('.country-name').textContent.toLowerCase();
-                if (countryName.includes(query)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    }
 
     // Grafik Batang Top 10 Risiko
     @php

@@ -114,11 +114,12 @@
 
         </a>
 
-        <a href="#">
+        <a href="{{ route('ports.index') }}"
+           class="{{ request()->routeIs('ports.*') ? 'active' : '' }}">
 
             <i class="bi bi-geo-alt-fill"></i>
 
-            Data Pelabuhan
+            Lokasi Pelabuhan
 
         </a>
 
@@ -213,6 +214,15 @@
             <i class="bi bi-arrow-repeat"></i>
 
             Sinkronisasi Data
+
+        </a>
+
+        <a href="{{ route('admin.lexicon') }}"
+           class="{{ request()->routeIs('admin.lexicon*') ? 'active' : '' }}">
+
+            <i class="bi bi-book"></i>
+
+            Kamus Berita
 
         </a>
 

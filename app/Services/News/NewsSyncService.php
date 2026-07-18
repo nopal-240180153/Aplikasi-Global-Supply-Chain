@@ -88,6 +88,10 @@ class NewsSyncService
 
                             'source' => $article['source']['name'] ?? '-',
 
+                            'image_url' => $article['image'] ?? null,
+
+                            'description' => $article['description'] ?? null,
+
                             'summary' => $article['description'] ?? '-',
 
                             'sentiment' => $analysis['sentiment'],

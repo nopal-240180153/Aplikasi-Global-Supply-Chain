@@ -13,15 +13,68 @@
         <div>
 
             <h2 class="fw-bold mb-1">
-                Monitoring Cuaca Global
+                🌦️ Monitoring Cuaca Global
             </h2>
 
             <p class="text-muted mb-0">
-                Real-time weather monitoring from Open-Meteo API.
+                Monitoring cuaca real-time dari Open-Meteo API.
             </p>
 
         </div>
 
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body">
+            <form method="GET" action="{{ route('weather.index') }}">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-semibold">Cari Negara</label>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            class="form-control" 
+                            placeholder="Ketik nama negara..."
+                            value="{{ request('search') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Benua</label>
+                        <select name="continent" class="form-select">
+                            <option value="">Semua Benua</option>
+                            @foreach($continents as $cont)
+                                <option value="{{ $cont }}" {{ request('continent') == $cont ? 'selected' : '' }}>
+                                    {{ $cont }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-semibold">Kondisi Cuaca</label>
+                        <select name="condition" class="form-select">
+                            <option value="">Semua Kondisi</option>
+                            @foreach($conditions as $cond)
+                                <option value="{{ $cond }}" {{ request('condition') == $cond ? 'selected' : '' }}>
+                                    {{ $cond }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-search"></i> Cari
+                        </button>
+                    </div>
+                </div>
+                @if(request()->hasAny(['search', 'continent', 'condition']))
+                    <div class="mt-3">
+                        <a href="{{ route('weather.index') }}" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x-circle"></i> Atur Ulang Filter
+                        </a>
+                    </div>
+                @endif
+            </form>
+        </div>
     </div>
 
     <!-- Statistik -->
@@ -34,17 +87,15 @@
 
                 <div class="card-body">
 
-                    <small class="text-muted">
-
-                        Total Monitoring
-
-                    </small>
-
-                    <h2 class="fw-bold mt-2">
-
-                        {{ $weatherLogs->total() }}
-
-                    </h2>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted fw-semibold">Total Monitoring</small>
+                            <h2 class="fw-bold mt-2 mb-0">{{ $weatherLogs->total() }}</h2>
+                        </div>
+                        <div class="text-primary fs-2">
+                            <i class="bi bi-cloud"></i>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -58,17 +109,15 @@
 
                 <div class="card-body">
 
-                    <small class="text-muted">
-
-                        Rata-rata Suhu
-
-                    </small>
-
-                    <h2 class="fw-bold mt-2 text-danger">
-
-                        {{ number_format($weatherLogs->avg('temperature'),1) }} °C
-
-                    </h2>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted fw-semibold">Rata-rata Suhu</small>
+                            <h2 class="fw-bold mt-2 mb-0 text-danger">{{ number_format($averageTemperature,1) }} °C</h2>
+                        </div>
+                        <div class="text-danger fs-2">
+                            <i class="bi bi-thermometer-half"></i>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -82,17 +131,15 @@
 
                 <div class="card-body">
 
-                    <small class="text-muted">
-
-                        Rata-rata Angin
-
-                    </small>
-
-                    <h2 class="fw-bold mt-2 text-primary">
-
-                        {{ number_format($weatherLogs->avg('wind_speed'),1) }}
-
-                    </h2>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted fw-semibold">Risiko Tinggi</small>
+                            <h2 class="fw-bold mt-2 mb-0 text-warning">{{ $highRiskCountries }}</h2>
+                        </div>
+                        <div class="text-warning fs-2">
+                            <i class="bi bi-exclamation-triangle"></i>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -106,23 +153,16 @@
 
                 <div class="card-body">
 
-                    <small class="text-muted">
-
-                        Last Update
-
-                    </small>
-
-                    <h6 class="mt-3">
-
-                        {{ now()->format('d M Y') }}
-
-                    </h6>
-
-                    <h4 class="fw-bold text-success">
-
-                        {{ now()->format('H:i') }}
-
-                    </h4>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted fw-semibold">Pembaruan Terakhir</small>
+                            <h6 class="mt-2 mb-1">{{ optional($lastUpdate)->format('d M Y') ?? 'T/A' }}</h6>
+                            <h5 class="fw-bold text-success mb-0">{{ optional($lastUpdate)->format('H:i') ?? '-' }}</h5>
+                        </div>
+                        <div class="text-success fs-2">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                    </div>
 
                 </div>
 
@@ -136,13 +176,14 @@
 
     <div class="card border-0 shadow-sm rounded-4">
 
-        <div class="card-header bg-white">
+        <div class="card-header bg-white border-0 pt-4 pb-3">
 
-            <strong>
-
-                Data Monitoring Cuaca
-
-            </strong>
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Data Monitoring Cuaca</h5>
+                @if($weatherLogs->total() > 0)
+                    <span class="badge bg-primary">{{ $weatherLogs->total() }} Data</span>
+                @endif
+            </div>
 
         </div>
 
@@ -166,7 +207,7 @@
 
                         <th>Kondisi</th>
 
-                        <th>Storm Risk</th>
+                        <th>Risiko Badai</th>
 
                         <th>Update</th>
 
@@ -184,11 +225,13 @@
 
                                 <div class="d-flex align-items-center">
 
-                                    <img src="{{ $weather->country->flag }}"
-                                         width="35"
-                                         class="me-2 rounded">
+                                    @if($weather->country->flag)
+                                        <img src="{{ $weather->country->flag }}"
+                                             width="35"
+                                             class="me-2 rounded">
+                                    @endif
 
-                                    {{ $weather->country->name }}
+                                    <strong>{{ $weather->country->name }}</strong>
 
                                 </div>
 
@@ -196,7 +239,7 @@
 
                             <td>
 
-                                {{ $weather->temperature }} °C
+                                <span class="badge bg-danger">{{ $weather->temperature }} °C</span>
 
                             </td>
 
@@ -214,7 +257,7 @@
 
                             <td>
 
-                                {{ $weather->weather_condition }}
+                                <span class="badge bg-info text-dark">{{ $weather->weather_condition }}</span>
 
                             </td>
 
@@ -224,15 +267,15 @@
 
                                     <span class="badge bg-success">
 
-                                        Low
+                                        Rendah ({{ $weather->storm_risk }}%)
 
                                     </span>
 
                                 @elseif($weather->storm_risk < 70)
 
-                                    <span class="badge bg-warning">
+                                    <span class="badge bg-warning text-dark">
 
-                                        Medium
+                                        Sedang ({{ $weather->storm_risk }}%)
 
                                     </span>
 
@@ -240,7 +283,7 @@
 
                                     <span class="badge bg-danger">
 
-                                        High
+                                        Tinggi ({{ $weather->storm_risk }}%)
 
                                     </span>
 
@@ -262,7 +305,10 @@
 
                             <td colspan="7" class="text-center p-5">
 
-                                Belum ada data cuaca.
+                                <div class="text-muted">
+                                    <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                                    Tidak ada data cuaca yang sesuai dengan filter.
+                                </div>
 
                             </td>
 
@@ -278,11 +324,11 @@
 
         </div>
 
-    </div>
-
-    <div class="mt-4">
-
-        {{ $weatherLogs->links() }}
+        @if($weatherLogs->hasPages())
+            <div class="card-footer bg-white border-0">
+                {{ $weatherLogs->links() }}
+            </div>
+        @endif
 
     </div>
 

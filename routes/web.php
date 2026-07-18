@@ -9,6 +9,8 @@ use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\EconomyController;
 use App\Http\Controllers\RiskController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\LexiconController;
+use App\Http\Controllers\PortController;
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth'])->group(function () {
@@ -65,6 +67,33 @@ Route::middleware(['auth'])->group(function () {
     ->name('news.index');
     Route::post('/sync/news', [SyncController::class, 'news'])
     ->name('sync.news');
+
+    // Port Sync
+    Route::post('/sync/ports', [SyncController::class, 'ports'])
+    ->name('sync.ports');
+
+    // Port Location Dashboard
+    Route::get('/ports', [PortController::class, 'index'])
+    ->name('ports.index');
+    
+    Route::get('/api/ports/data', [PortController::class, 'getData'])
+    ->name('ports.data');
+
+    // Lexicon Management (Sentiment Analysis)
+    Route::get('/admin/lexicon', [LexiconController::class, 'index'])
+    ->name('admin.lexicon');
+    
+    Route::post('/admin/lexicon/positive', [LexiconController::class, 'storePositive'])
+    ->name('admin.lexicon.positive.store');
+    
+    Route::delete('/admin/lexicon/positive/{positiveWord}', [LexiconController::class, 'destroyPositive'])
+    ->name('admin.lexicon.positive.destroy');
+    
+    Route::post('/admin/lexicon/negative', [LexiconController::class, 'storeNegative'])
+    ->name('admin.lexicon.negative.store');
+    
+    Route::delete('/admin/lexicon/negative/{negativeWord}', [LexiconController::class, 'destroyNegative'])
+    ->name('admin.lexicon.negative.destroy');
 });
 
 require __DIR__.'/auth.php';

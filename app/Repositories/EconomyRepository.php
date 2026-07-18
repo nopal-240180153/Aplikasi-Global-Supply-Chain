@@ -9,12 +9,26 @@ class EconomyRepository
     /**
      * Pagination data ekonomi
      */
-    public function paginate($perPage = 20)
-    {
+    public function paginate(
+        $perPage = 20,
+        ?string $search = null,
+        ?string $region = null
+    ) {
         return EconomyData::with('country')
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('country', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                });
+            })
+            ->when($region, function ($query) use ($region) {
+                $query->whereHas('country', function ($q) use ($region) {
+                    $q->where('region', $region);
+                });
+            })
             ->orderBy('year', 'desc')
             ->orderBy('country_id')
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     /**

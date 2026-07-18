@@ -103,7 +103,7 @@
 
                                         <span class="badge bg-success">
 
-                                            Success
+                                            Berhasil
 
                                         </span>
 
@@ -111,7 +111,7 @@
 
                                         <span class="badge bg-warning text-dark">
 
-                                            Running
+                                            Berjalan
 
                                         </span>
 
@@ -119,7 +119,7 @@
 
                                         <span class="badge bg-danger">
 
-                                            Failed
+                                            Gagal
 
                                         </span>
 
@@ -141,7 +141,7 @@
 
                         <tr>
 
-                            <td>Last Sync</td>
+                            <td>Sinkronisasi Terakhir</td>
 
                             <td>
 
@@ -235,15 +235,15 @@
 
                                     @if($weatherSync->status=='Success')
 
-                                        <span class="badge bg-success">Success</span>
+                                        <span class="badge bg-success">Berhasil</span>
 
                                     @elseif($weatherSync->status=='Running')
 
-                                        <span class="badge bg-warning text-dark">Running</span>
+                                        <span class="badge bg-warning text-dark">Berjalan</span>
 
                                     @else
 
-                                        <span class="badge bg-danger">Failed</span>
+                                        <span class="badge bg-danger">Gagal</span>
 
                                     @endif
 
@@ -259,7 +259,7 @@
 
                         <tr>
 
-                            <td>Last Sync</td>
+                            <td>Sinkronisasi Terakhir</td>
 
                             <td>
 
@@ -355,15 +355,15 @@
 
                                     @if($exchangeRateSync->status=='Success')
 
-                                        <span class="badge bg-success">Success</span>
+                                        <span class="badge bg-success">Berhasil</span>
 
                                     @elseif($exchangeRateSync->status=='Running')
 
-                                        <span class="badge bg-warning text-dark">Running</span>
+                                        <span class="badge bg-warning text-dark">Berjalan</span>
 
                                     @else
 
-                                        <span class="badge bg-danger">Failed</span>
+                                        <span class="badge bg-danger">Gagal</span>
 
                                     @endif
 
@@ -379,7 +379,7 @@
 
                         <tr>
 
-                            <td>Last Sync</td>
+                            <td>Sinkronisasi Terakhir</td>
 
                             <td>
 
@@ -479,7 +479,7 @@
 
                                         <span class="badge bg-success">
 
-                                            Success
+                                            Berhasil
 
                                         </span>
 
@@ -487,7 +487,7 @@
 
                                         <span class="badge bg-warning text-dark">
 
-                                            Running
+                                            Berjalan
 
                                         </span>
 
@@ -495,7 +495,7 @@
 
                                         <span class="badge bg-danger">
 
-                                            Failed
+                                            Gagal
 
                                         </span>
 
@@ -517,11 +517,11 @@
 
                         <tr>
 
-                            <td>
+                        <td>
 
-                                Last Sync
+                            Sinkronisasi Terakhir
 
-                            </td>
+                        </td>
 
                             <td>
 
@@ -631,7 +631,7 @@
 
                                     <span class="badge bg-success">
 
-                                        Success
+                                        Berhasil
 
                                     </span>
 
@@ -639,7 +639,7 @@
 
                                     <span class="badge bg-warning text-dark">
 
-                                        Processing
+                                        Memproses
 
                                     </span>
 
@@ -647,7 +647,7 @@
 
                                     <span class="badge bg-danger">
 
-                                        Failed
+                                        Gagal
 
                                     </span>
 
@@ -767,7 +767,7 @@
 
                                     <span class="badge bg-success">
 
-                                        Success
+                                        Berhasil
 
                                     </span>
 
@@ -775,7 +775,7 @@
 
                                     <span class="badge bg-warning text-dark">
 
-                                        Running
+                                        Berjalan
 
                                     </span>
 
@@ -783,7 +783,7 @@
 
                                     <span class="badge bg-danger">
 
-                                        Failed
+                                        Gagal
 
                                     </span>
 
@@ -861,6 +861,144 @@
         </div>
 
     </div>
+
+    <!-- ================= PELABUHAN ================= -->
+
+    <div class="col-lg-6">
+
+        <div class="card shadow border-0 h-100">
+
+            <div class="card-header bg-dark text-white">
+
+                <h5 class="mb-0">
+
+                    🚢 Data Pelabuhan
+
+                </h5>
+
+            </div>
+
+            <div class="card-body">
+
+                <p class="text-muted">
+
+                    Sinkronisasi data pelabuhan global dari World Port Index.
+
+                </p>
+
+                <table class="table table-borderless">
+
+                    <tr>
+
+                        <td width="160">
+
+                            Status
+
+                        </td>
+
+                        <td>
+
+                            @if($portSync)
+
+                                @if($portSync->status == 'Success')
+
+                                    <span class="badge bg-success">
+
+                                        Berhasil
+
+                                    </span>
+
+                                @elseif($portSync->status == 'Running')
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Berjalan
+
+                                    </span>
+
+                                @else
+
+                                    <span class="badge bg-danger">
+
+                                        Gagal
+
+                                    </span>
+
+                                @endif
+
+                            @else
+
+                                <span class="badge bg-secondary">
+
+                                    Belum Pernah
+
+                                </span>
+
+                            @endif
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Sinkronisasi Terakhir</td>
+
+                        <td>
+
+                            {{ optional($portSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Total Data</td>
+
+                        <td>
+
+                            {{ $portSync->updated_data ?? 0 }}
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Durasi</td>
+
+                        <td>
+
+                            {{ $portSync->duration ?? '-' }} detik
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+                <form method="POST"
+                      action="{{ route('sync.ports') }}">
+
+                    @csrf
+
+                    <button class="btn btn-dark w-100">
+
+                        <i class="bi bi-geo-alt-fill"></i>
+
+                        Sinkronisasi Pelabuhan
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 </div>

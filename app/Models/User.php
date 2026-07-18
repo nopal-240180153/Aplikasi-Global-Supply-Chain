@@ -29,4 +29,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Relasi ke Watchlist (Favorite Countries)
+     */
+    public function watchlists()
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    /**
+     * Relasi ke Articles (sebagai author)
+     */
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
+
+    /**
+     * Check if user has country in watchlist
+     */
+    public function hasInWatchlist($countryId): bool
+    {
+        return $this->watchlists()->where('country_id', $countryId)->exists();
+    }
 }
