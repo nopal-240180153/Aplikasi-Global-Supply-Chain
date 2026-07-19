@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Visualization API - Afghanistan</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        button { margin: 10px; padding: 10px 20px; font-size: 14px; cursor: pointer; }
+        #results { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 20px; white-space: pre-wrap; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test Visualization API</h1>
+    <p><strong>Country:</strong> Afghanistan (ID: 2)</p>
+    <p><strong>Date Range:</strong> Last 30 days</p>
+    
+    <button onclick="testGdpApi()">Test GDP API</button>
+    <button onclick="testInflationApi()">Test Inflation API</button>
+    <button onclick="testExchangeApi()">Test Exchange API</button>
+    <button onclick="testRiskApi()">Test Risk API</button>
+    
+    <h2>Results:</h2>
+    <div id="results">Click a button to test...</div>
+
+    <script>
+        const endDate = new Date().toISOString().split('T')[0];
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - 30);
+        const startDateStr = startDate.toISOString().split('T')[0];
+        
+        const countryId = 2; // Afghanistan
+
+        console.log('Date range:', startDateStr, 'to', endDate);
+        console.log('Country ID:', countryId);
+
+        function testGdpApi() {
+            const url = `/api/visualizations/gdp?start_date=${startDateStr}&end_date=${endDate}&aggregation=daily&view_mode=country&countries[]=${countryId}`;
+            console.log('Testing GDP API:', url);
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('GDP Response:', data);
+                    const hasData = data.success && data.data.datasets && data.data.datasets.length > 0;
+                    document.getElementById('results').innerHTML = `
+                        <h3 class="${hasData ? 'success' : 'error'}">GDP API ${hasData ? '✓ HAS DATA' : '✗ NO DATA'}</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                })
+                .catch(error => {
+                    console.error('GDP Error:', error);
+                    document.getElementById('results').innerHTML = `<h3 class="error">ERROR: ${error.message}</h3>`;
+                });
+        }
+
+        function testInflationApi() {
+            const url = `/api/visualizations/inflation?start_date=${startDateStr}&end_date=${endDate}&aggregation=daily&view_mode=country&countries[]=${countryId}`;
+            console.log('Testing Inflation API:', url);
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Inflation Response:', data);
+                    const hasData = data.success && data.data.datasets && data.data.datasets.length > 0;
+                    document.getElementById('results').innerHTML = `
+                        <h3 class="${hasData ? 'success' : 'error'}">Inflation API ${hasData ? '✓ HAS DATA' : '✗ NO DATA'}</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Inflation Error:', error);
+                    document.getElementById('results').innerHTML = `<h3 class="error">ERROR: ${error.message}</h3>`;
+                });
+        }
+
+        function testExchangeApi() {
+            const url = `/api/visualizations/exchange-rates?start_date=${startDateStr}&end_date=${endDate}&aggregation=daily&base_currency=USD&target_currencies[]=IDR&target_currencies[]=EUR&target_currencies[]=JPY`;
+            console.log('Testing Exchange API:', url);
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Exchange Response:', data);
+                    const hasData = data.success && data.data.datasets && data.data.datasets.length > 0;
+                    document.getElementById('results').innerHTML = `
+                        <h3 class="${hasData ? 'success' : 'error'}">Exchange Rate API ${hasData ? '✓ HAS DATA' : '✗ NO DATA'}</h3>
+                        <p>${data.message || ''}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Exchange Error:', error);
+                    document.getElementById('results').innerHTML = `<h3 class="error">ERROR: ${error.message}</h3>`;
+                });
+        }
+
+        function testRiskApi() {
+            const url = `/api/visualizations/risk-scores?start_date=${startDateStr}&end_date=${endDate}&aggregation=daily&view_mode=country&countries[]=${countryId}`;
+            console.log('Testing Risk API:', url);
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Risk Response:', data);
+                    const hasData = data.success && data.data.datasets && data.data.datasets.length > 0;
+                    document.getElementById('results').innerHTML = `
+                        <h3 class="${hasData ? 'success' : 'error'}">Risk Score API ${hasData ? '✓ HAS DATA' : '✗ NO DATA'}</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Risk Error:', error);
+                    document.getElementById('results').innerHTML = `<h3 class="error">ERROR: ${error.message}</h3>`;
+                });
+        }
+    </script>
+</body>
+</html>

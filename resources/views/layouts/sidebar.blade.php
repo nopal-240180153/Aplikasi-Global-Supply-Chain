@@ -179,7 +179,8 @@
 
         </a>
 
-        <a href="#">
+        <a href="{{ route('visualizations.index') }}"
+           class="{{ request()->routeIs('visualizations.*') ? 'active' : '' }}">
 
             <i class="bi bi-bar-chart-line"></i>
 
@@ -187,7 +188,8 @@
 
         </a>
 
-        <a href="#">
+        <a href="{{ route('comparison.index') }}"
+           class="{{ request()->routeIs('comparison.*') ? 'active' : '' }}">
 
             <i class="bi bi-arrow-left-right"></i>
 

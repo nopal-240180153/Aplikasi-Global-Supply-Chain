@@ -16,7 +16,7 @@ class NewsService
 
                 ->get(config('gnews.base_url'), [
 
-                    'q' => $country,
+                    'q' => "{$country} (\"supply chain\" OR \"logistics\" OR \"economy\" OR \"trade\" OR \"rantai pasok\" OR \"ekspor\" OR \"impor\")",
 
                     'lang' => 'en',
 

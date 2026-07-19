@@ -11,6 +11,9 @@ use App\Http\Controllers\RiskController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\LexiconController;
 use App\Http\Controllers\PortController;
+use App\Http\Controllers\VisualizationController;
+use App\Http\Controllers\ComparisonController;
+
 Route::redirect('/', '/dashboard');
 
 Route::middleware(['auth'])->group(function () {
@@ -94,6 +97,71 @@ Route::middleware(['auth'])->group(function () {
     
     Route::delete('/admin/lexicon/negative/{negativeWord}', [LexiconController::class, 'destroyNegative'])
     ->name('admin.lexicon.negative.destroy');
+
+    // Data Visualization Dashboard
+    Route::get('/visualizations', [VisualizationController::class, 'index'])
+    ->name('visualizations.index');
+    
+    // API endpoints untuk chart data
+    Route::prefix('api/visualizations')->group(function () {
+        Route::get('/gdp', [VisualizationController::class, 'getGdpData'])
+        ->name('api.visualizations.gdp');
+        
+        Route::get('/inflation', [VisualizationController::class, 'getInflationData'])
+        ->name('api.visualizations.inflation');
+        
+        Route::get('/exchange-rates', [VisualizationController::class, 'getExchangeRateData'])
+        ->name('api.visualizations.exchange-rates');
+        
+        Route::get('/risk-scores', [VisualizationController::class, 'getRiskScoreData'])
+        ->name('api.visualizations.risk-scores');
+        
+        // New endpoints
+        Route::get('/risk-distribution', [VisualizationController::class, 'getRiskDistribution'])
+        ->name('api.visualizations.risk-distribution');
+        
+        Route::get('/top-risk-countries', [VisualizationController::class, 'getTopRiskCountries'])
+        ->name('api.visualizations.top-risk-countries');
+        
+        Route::get('/weather', [VisualizationController::class, 'getWeatherData'])
+        ->name('api.visualizations.weather');
+        
+        Route::get('/economy', [VisualizationController::class, 'getEconomyData'])
+        ->name('api.visualizations.economy');
+        
+        Route::get('/news-distribution', [VisualizationController::class, 'getNewsDistribution'])
+        ->name('api.visualizations.news-distribution');
+        
+        Route::get('/risk-composition', [VisualizationController::class, 'getRiskComposition'])
+        ->name('api.visualizations.risk-composition');
+        
+        Route::get('/continent-distribution', [VisualizationController::class, 'getContinentDistribution'])
+        ->name('api.visualizations.continent-distribution');
+        
+        Route::get('/ports', [VisualizationController::class, 'getPortData'])
+        ->name('api.visualizations.ports');
+        
+        Route::get('/summary-stats', [VisualizationController::class, 'getSummaryStats'])
+        ->name('api.visualizations.summary-stats');
+        
+        Route::get('/map-data', [VisualizationController::class, 'getMapData'])
+        ->name('api.visualizations.map-data');
+        
+        Route::get('/summary-table', [VisualizationController::class, 'getSummaryTable'])
+        ->name('api.visualizations.summary-table');
+        
+        Route::get('/trend-data', [VisualizationController::class, 'getTrendData'])
+        ->name('api.visualizations.trend-data');
+        
+        Route::get('/trend-summary', [VisualizationController::class, 'getTrendSummaryTable'])
+        ->name('api.visualizations.trend-summary');
+    });
+
+    // Country Comparison Engine
+    Route::get('/comparison', [ComparisonController::class, 'index'])
+        ->name('comparison.index');
+    Route::get('/api/comparison', [ComparisonController::class, 'compare'])
+        ->name('api.comparison');
 });
 
 require __DIR__.'/auth.php';
