@@ -393,11 +393,26 @@
             responsive:true, maintainAspectRatio:false,
             interaction:{mode:'index',intersect:false},
             plugins:{legend:{position:'bottom',labels:{boxWidth:12,padding:10,font:{size:10}}}},
-            scales:{x:{grid:{display:false}},y:{grid:{color:'#f8fafc'}}},
+            scales:{
+                x:{grid:{display:false}},
+                y:{grid:{color:'#f0f4f8'}, beginAtZero:false}
+            },
         };
         function mk(id, data) {
+            // Convert datasets to bar style: add borderRadius, remove fill/tension
+            var barData = JSON.parse(JSON.stringify(data));
+            barData.datasets = barData.datasets.map(function(ds) {
+                return Object.assign({}, ds, {
+                    borderRadius: 6,
+                    borderSkipped: false,
+                    fill: false,
+                    tension: 0,
+                    pointRadius: 0,
+                    backgroundColor: ds.backgroundColor || ds.borderColor,
+                });
+            });
             var el = document.getElementById(id);
-            if (el) charts[id] = new Chart(el.getContext('2d'), {type:'line',data:data,options:opts});
+            if (el) charts[id] = new Chart(el.getContext('2d'), {type:'bar', data:barData, options:opts});
         }
         mk('chGdp',  d.gdp_trend);
         mk('chInfl', d.inflation_trend);

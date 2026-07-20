@@ -1,118 +1,446 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Test Visualization API - Afghanistan</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REST API Testing - Global Supply Chain</title>
     <style>
-        body { font-family: Arial; padding: 20px; }
-        button { margin: 10px; padding: 10px 20px; font-size: 14px; cursor: pointer; }
-        #results { background: #f5f5f5; padding: 15px; border-radius: 5px; margin-top: 20px; white-space: pre-wrap; }
-        .success { color: green; }
-        .error { color: red; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .api-section {
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            background: #f9f9f9;
+        }
+        
+        .api-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .api-section h2 .badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: normal;
+        }
+        
+        .endpoint-info {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .endpoint-url {
+            font-family: 'Courier New', monospace;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .params {
+            margin: 10px 0;
+        }
+        
+        .params label {
+            display: inline-block;
+            width: 150px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .params input, .params select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+            font-size: 14px;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        #results {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 500px;
+            overflow-y: auto;
+            display: none;
+        }
+        
+        #results.show {
+            display: block;
+        }
+        
+        .success { color: #4caf50; font-weight: bold; }
+        .error { color: #f44336; font-weight: bold; }
+        .info { color: #2196f3; font-weight: bold; }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <h1>Test Visualization API</h1>
-    <p><strong>Country:</strong> Afghanistan (ID: 2)</p>
-    <p><strong>Date Range:</strong> Last 30 days</p>
-    
-    <button onclick="testGdpApi()">Test GDP API</button>
-    <button onclick="testInflationApi()">Test Inflation API</button>
-    <button onclick="testExchangeApi()">Test Exchange API</button>
-    <button onclick="testRiskApi()">Test Risk API</button>
-    
-    <h2>Results:</h2>
-    <div id="results">Click a button to test...</div>
+    <div class="container">
+        <h1>🔌 REST API Testing</h1>
+        <p class="subtitle">Global Supply Chain Monitoring System - API Documentation & Testing</p>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Countries</h3>
+                <div class="number">1</div>
+            </div>
+            <div class="stat-card">
+                <h3>Risk Scores</h3>
+                <div class="number">2</div>
+            </div>
+            <div class="stat-card">
+                <h3>Ports</h3>
+                <div class="number">3</div>
+            </div>
+            <div class="stat-card">
+                <h3>News</h3>
+                <div class="number">4</div>
+            </div>
+            <div class="stat-card">
+                <h3>Currency</h3>
+                <div class="number">5</div>
+            </div>
+        </div>
+
+        <!-- 1. Countries API -->
+        <div class="api-section">
+            <h2>🌍 Countries API <span class="badge">GET</span></h2>
+            <div class="endpoint-info">
+                <div class="endpoint-url">GET /api/v1/countries</div>
+                <div class="params">
+                    <label>Search:</label>
+                    <input type="text" id="countries-search" placeholder="Indonesia">
+                </div>
+                <div class="params">
+                    <label>Continent:</label>
+                    <input type="text" id="countries-continent" placeholder="Asia">
+                </div>
+                <div class="params">
+                    <label>Per Page:</label>
+                    <input type="number" id="countries-per-page" value="10">
+                </div>
+                <button onclick="testCountriesApi()">Test Countries API</button>
+            </div>
+        </div>
+
+        <!-- 2. Risk API -->
+        <div class="api-section">
+            <h2>⚠️ Risk Scores API <span class="badge">GET</span></h2>
+            <div class="endpoint-info">
+                <div class="endpoint-url">GET /api/v1/risk</div>
+                <div class="params">
+                    <label>Risk Level:</label>
+                    <select id="risk-level">
+                        <option value="">All Levels</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                    </select>
+                </div>
+                <div class="params">
+                    <label>Search Country:</label>
+                    <input type="text" id="risk-search" placeholder="China">
+                </div>
+                <div class="params">
+                    <label>Min Score:</label>
+                    <input type="number" id="risk-min-score" placeholder="0">
+                </div>
+                <button onclick="testRiskApi()">Test Risk API</button>
+            </div>
+        </div>
+
+        <!-- 3. Ports API -->
+        <div class="api-section">
+            <h2>🚢 Ports API <span class="badge">GET</span></h2>
+            <div class="endpoint-info">
+                <div class="endpoint-url">GET /api/v1/ports</div>
+                <div class="params">
+                    <label>Search Port:</label>
+                    <input type="text" id="ports-search" placeholder="Singapore">
+                </div>
+                <div class="params">
+                    <label>Country:</label>
+                    <input type="text" id="ports-country" placeholder="Singapore">
+                </div>
+                <div class="params">
+                    <label>Per Page:</label>
+                    <input type="number" id="ports-per-page" value="15">
+                </div>
+                <button onclick="testPortsApi()">Test Ports API</button>
+            </div>
+        </div>
+
+        <!-- 4. News API -->
+        <div class="api-section">
+            <h2>📰 News API <span class="badge">GET</span></h2>
+            <div class="endpoint-info">
+                <div class="endpoint-url">GET /api/v1/news</div>
+                <div class="params">
+                    <label>Search:</label>
+                    <input type="text" id="news-search" placeholder="supply chain">
+                </div>
+                <div class="params">
+                    <label>Sentiment:</label>
+                    <select id="news-sentiment">
+                        <option value="">All Sentiments</option>
+                        <option value="Positive">Positive</option>
+                        <option value="Neutral">Neutral</option>
+                        <option value="Negative">Negative</option>
+                    </select>
+                </div>
+                <div class="params">
+                    <label>Country:</label>
+                    <input type="text" id="news-country" placeholder="USA">
+                </div>
+                <button onclick="testNewsApi()">Test News API</button>
+            </div>
+        </div>
+
+        <!-- 5. Currency API -->
+        <div class="api-section">
+            <h2>💱 Currency API <span class="badge">GET</span></h2>
+            <div class="endpoint-info">
+                <div class="endpoint-url">GET /api/v1/currency</div>
+                <div class="params">
+                    <label>Base Currency:</label>
+                    <input type="text" id="currency-base" placeholder="USD" value="USD">
+                </div>
+                <div class="params">
+                    <label>Target Currency:</label>
+                    <input type="text" id="currency-target" placeholder="IDR">
+                </div>
+                <div class="params">
+                    <label>Country:</label>
+                    <input type="text" id="currency-country" placeholder="Indonesia">
+                </div>
+                <button onclick="testCurrencyApi()">Test Currency API</button>
+                <button onclick="testCurrencyLatest()">Get Latest Rates</button>
+            </div>
+        </div>
+
+        <h2 style="margin-top: 30px;">📊 Response:</h2>
+        <div id="results"></div>
+    </div>
 
     <script>
-        const endDate = new Date().toISOString().split('T')[0];
-        const startDate = new Date();
-        startDate.setDate(startDate.getDate() - 30);
-        const startDateStr = startDate.toISOString().split('T')[0];
-        
-        const countryId = 2; // Afghanistan
-
-        console.log('Date range:', startDateStr, 'to', endDate);
-        console.log('Country ID:', countryId);
-
-        function testGdpApi() {
-            const url = `/api/visualizations/gdp?start_date=${startDateStr}&end_date=${endDate}&aggregation=daily&view_mode=country&countries[]=${countryId}`;
-            console.log('Testing GDP API:', url);
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('GDP Response:', data);
-                    const hasData = data.success && data.data.datasets && data.data.datasets.length > 0;
-                    document.getElementById('results').innerHTML = `
-                        <h3 class="${hasData ? 'success' : 'error'}">GDP API ${hasData ? '✓ HAS DATA' : '✗ NO DATA'}</h3>
-                        <pre>${JSON.stringify(data, null, 2)}</pre>
-                    `;
-                })
-                .catch(error => {
-                    console.error('GDP Error:', error);
-                    document.getElementById('results').innerHTML = `<h3 class="error">ERROR: ${error.message}</h3>`;
-                });
+        function showLoading(message) {
+            const results = document.getElementById('results');
+            results.className = 'show';
+            results.innerHTML = `<span class="info">${message}</span><span class="loading"></span>`;
         }
 
-        function testInflationApi() {
-            const url = `/api/visualizations/inflation?start_date=${startDateStr}&end_date=${endDate}&aggregation=daily&view_mode=country&countries[]=${countryId}`;
-            console.log('Testing Inflation API:', url);
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Inflation Response:', data);
-                    const hasData = data.success && data.data.datasets && data.data.datasets.length > 0;
-                    document.getElementById('results').innerHTML = `
-                        <h3 class="${hasData ? 'success' : 'error'}">Inflation API ${hasData ? '✓ HAS DATA' : '✗ NO DATA'}</h3>
-                        <pre>${JSON.stringify(data, null, 2)}</pre>
-                    `;
-                })
-                .catch(error => {
-                    console.error('Inflation Error:', error);
-                    document.getElementById('results').innerHTML = `<h3 class="error">ERROR: ${error.message}</h3>`;
-                });
+        function showResults(data, success = true) {
+            const results = document.getElementById('results');
+            results.className = 'show';
+            const status = success ? 'success' : 'error';
+            const statusText = success ? '✓ SUCCESS' : '✗ ERROR';
+            results.innerHTML = `<span class="${status}">${statusText}</span>\n\n${JSON.stringify(data, null, 2)}`;
         }
 
-        function testExchangeApi() {
-            const url = `/api/visualizations/exchange-rates?start_date=${startDateStr}&end_date=${endDate}&aggregation=daily&base_currency=USD&target_currencies[]=IDR&target_currencies[]=EUR&target_currencies[]=JPY`;
-            console.log('Testing Exchange API:', url);
+        function testCountriesApi() {
+            showLoading('Testing Countries API...');
+            const search = document.getElementById('countries-search').value;
+            const continent = document.getElementById('countries-continent').value;
+            const perPage = document.getElementById('countries-per-page').value;
+            
+            let url = '/api/v1/countries?';
+            if (search) url += `search=${encodeURIComponent(search)}&`;
+            if (continent) url += `continent=${encodeURIComponent(continent)}&`;
+            if (perPage) url += `per_page=${perPage}&`;
             
             fetch(url)
                 .then(response => response.json())
-                .then(data => {
-                    console.log('Exchange Response:', data);
-                    const hasData = data.success && data.data.datasets && data.data.datasets.length > 0;
-                    document.getElementById('results').innerHTML = `
-                        <h3 class="${hasData ? 'success' : 'error'}">Exchange Rate API ${hasData ? '✓ HAS DATA' : '✗ NO DATA'}</h3>
-                        <p>${data.message || ''}</p>
-                        <pre>${JSON.stringify(data, null, 2)}</pre>
-                    `;
-                })
-                .catch(error => {
-                    console.error('Exchange Error:', error);
-                    document.getElementById('results').innerHTML = `<h3 class="error">ERROR: ${error.message}</h3>`;
-                });
+                .then(data => showResults(data, data.success))
+                .catch(error => showResults({error: error.message}, false));
         }
 
         function testRiskApi() {
-            const url = `/api/visualizations/risk-scores?start_date=${startDateStr}&end_date=${endDate}&aggregation=daily&view_mode=country&countries[]=${countryId}`;
-            console.log('Testing Risk API:', url);
+            showLoading('Testing Risk API...');
+            const level = document.getElementById('risk-level').value;
+            const search = document.getElementById('risk-search').value;
+            const minScore = document.getElementById('risk-min-score').value;
+            
+            let url = '/api/v1/risk?';
+            if (level) url += `risk_level=${level}&`;
+            if (search) url += `search=${encodeURIComponent(search)}&`;
+            if (minScore) url += `min_score=${minScore}&`;
             
             fetch(url)
                 .then(response => response.json())
-                .then(data => {
-                    console.log('Risk Response:', data);
-                    const hasData = data.success && data.data.datasets && data.data.datasets.length > 0;
-                    document.getElementById('results').innerHTML = `
-                        <h3 class="${hasData ? 'success' : 'error'}">Risk Score API ${hasData ? '✓ HAS DATA' : '✗ NO DATA'}</h3>
-                        <pre>${JSON.stringify(data, null, 2)}</pre>
-                    `;
-                })
-                .catch(error => {
-                    console.error('Risk Error:', error);
-                    document.getElementById('results').innerHTML = `<h3 class="error">ERROR: ${error.message}</h3>`;
-                });
+                .then(data => showResults(data, data.success))
+                .catch(error => showResults({error: error.message}, false));
+        }
+
+        function testPortsApi() {
+            showLoading('Testing Ports API...');
+            const search = document.getElementById('ports-search').value;
+            const country = document.getElementById('ports-country').value;
+            const perPage = document.getElementById('ports-per-page').value;
+            
+            let url = '/api/v1/ports?';
+            if (search) url += `search=${encodeURIComponent(search)}&`;
+            if (country) url += `country=${encodeURIComponent(country)}&`;
+            if (perPage) url += `per_page=${perPage}&`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => showResults(data, data.success))
+                .catch(error => showResults({error: error.message}, false));
+        }
+
+        function testNewsApi() {
+            showLoading('Testing News API...');
+            const search = document.getElementById('news-search').value;
+            const sentiment = document.getElementById('news-sentiment').value;
+            const country = document.getElementById('news-country').value;
+            
+            let url = '/api/v1/news?';
+            if (search) url += `search=${encodeURIComponent(search)}&`;
+            if (sentiment) url += `sentiment=${sentiment}&`;
+            if (country) url += `country=${encodeURIComponent(country)}&`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => showResults(data, data.success))
+                .catch(error => showResults({error: error.message}, false));
+        }
+
+        function testCurrencyApi() {
+            showLoading('Testing Currency API...');
+            const base = document.getElementById('currency-base').value;
+            const target = document.getElementById('currency-target').value;
+            const country = document.getElementById('currency-country').value;
+            
+            let url = '/api/v1/currency?';
+            if (base) url += `base_currency=${base}&`;
+            if (target) url += `target_currency=${target}&`;
+            if (country) url += `country=${encodeURIComponent(country)}&`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => showResults(data, data.success))
+                .catch(error => showResults({error: error.message}, false));
+        }
+
+        function testCurrencyLatest() {
+            showLoading('Getting Latest Exchange Rates...');
+            fetch('/api/v1/currency/latest')
+                .then(response => response.json())
+                .then(data => showResults(data, data.success))
+                .catch(error => showResults({error: error.message}, false));
         }
     </script>
 </body>

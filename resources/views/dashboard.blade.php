@@ -275,18 +275,30 @@
 
     const countries = @json($countries);
 
+    const riskColors = { Rendah: '#198754', Sedang: '#ffc107', Tinggi: '#dc3545' };
+
     countries.forEach(country => {
         if (country.latitude && country.longitude) {
-            L.marker([
-                country.latitude,
-                country.longitude
-            ])
-            .addTo(map)
-            .bindPopup(
-                '<b>' + country.name + '</b><br>' + 
-                (country.continent || 'T/A') + '<br>' +
-                '<small>Populasi: ' + (country.population ? country.population.toLocaleString() : 'T/A') + '</small>'
-            );
+            const color = riskColors[country.risk_level] || '#0d6efd';
+            const icon = L.divIcon({
+                className: '',
+                html: `<div style="background:${color};width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 0 4px rgba(0,0,0,0.4);"></div>`,
+                iconSize: [14, 14],
+                iconAnchor: [7, 7]
+            });
+            L.marker([country.latitude, country.longitude], {icon})
+                .addTo(map)
+                .bindPopup(
+                    `<div style="min-width:160px;">
+                        <b style="font-size:0.95rem;">${country.name}</b><br>
+                        <small class="text-muted">${country.continent || '-'}</small><br><br>
+                        <span>👥 ${country.population ? country.population.toLocaleString() : 'N/A'}</span><br>
+                        <span>💱 ${country.currency_code || 'N/A'}</span><br><br>
+                        <a href="/countries/${country.id}" class="btn btn-sm btn-primary w-100" style="font-size:0.8rem;">
+                            🔍 Lihat Detail Negara
+                        </a>
+                    </div>`
+                );
         }
     });
 

@@ -86,6 +86,7 @@
                         <th>Mata Uang</th>
                         <th>Populasi</th>
                         <th>Tingkat Risiko</th>
+                        <th class="text-center">Aksi</th>
 
                     </tr>
 
@@ -111,9 +112,10 @@
                             </td>
 
                             <td>
-
-                                <strong>{{ $country->name }}</strong>
-
+                                <a href="{{ route('countries.show', $country->id) }}" class="text-decoration-none text-dark fw-bold d-flex align-items-center gap-1 hover-primary" style="transition: color 0.2s;">
+                                    {{ $country->name }}
+                                    <i class="bi bi-box-arrow-up-right text-primary opacity-0 hover-show" style="font-size: 0.75rem;"></i>
+                                </a>
                             </td>
 
                             <td>
@@ -154,13 +156,25 @@
 
                             </td>
 
+                            <td class="text-center">
+                                @php
+                                    $isFavorited = in_array($country->id, $userWatchlists ?? []);
+                                @endphp
+                                <button type="button" 
+                                        class="btn btn-sm btn-outline-warning btn-favorite" 
+                                        data-id="{{ $country->id }}"
+                                        title="{{ $isFavorited ? 'Hapus dari Favorit' : 'Tambah ke Favorit' }}">
+                                    <i class="bi {{ $isFavorited ? 'bi-star-fill' : 'bi-star' }}"></i>
+                                </button>
+                            </td>
+
                         </tr>
 
                     @empty
 
                         <tr>
 
-                            <td colspan="7" class="text-center p-5">
+                            <td colspan="8" class="text-center p-5">
 
                                 <div class="text-muted">
                                     <i class="bi bi-inbox fs-1 d-block mb-2"></i>
@@ -192,3 +206,59 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const favoriteBtns = document.querySelectorAll('.btn-favorite');
+    
+    favoriteBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const countryId = this.getAttribute('data-id');
+            const icon = this.querySelector('i');
+            const btnEl = this;
+            
+            // Simpan status asli icon untuk jaga-jaga
+            const originalIconClass = icon.className;
+            
+            // Ganti icon jadi loading spinner sementara
+            icon.className = 'spinner-border spinner-border-sm';
+            btnEl.disabled = true;
+
+            fetch('{{ route("favorites.toggle") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    country_id: countryId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                btnEl.disabled = false;
+                if (data.success) {
+                    if (data.status === 'added') {
+                        icon.className = 'bi bi-star-fill';
+                        btnEl.setAttribute('title', 'Hapus dari Favorit');
+                    } else {
+                        icon.className = 'bi bi-star';
+                        btnEl.setAttribute('title', 'Tambah ke Favorit');
+                    }
+                } else {
+                    icon.className = originalIconClass;
+                    alert('Gagal memperbarui favorit: ' + (data.message || 'Error'));
+                }
+            })
+            .catch(error => {
+                btnEl.disabled = false;
+                icon.className = originalIconClass;
+                console.error('Error:', error);
+                alert('Terjadi kesalahan jaringan.');
+            });
+        });
+    });
+});
+</script>
+@endpush

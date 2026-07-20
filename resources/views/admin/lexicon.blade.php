@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.admin-portal')
 
 @section('title', 'Kamus Berita')
 

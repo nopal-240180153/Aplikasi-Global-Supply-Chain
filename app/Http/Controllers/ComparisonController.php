@@ -196,7 +196,7 @@ class ComparisonController extends Controller
             ->whereNotNull($field)
             ->pluck($field, 'year');
 
-        return $years->map(fn($y) => $rows[$y] ? round($rows[$y], 2) : null)->toArray();
+        return $years->map(fn($y) => isset($rows[$y]) ? round($rows[$y], 2) : null)->toArray();
     }
 
     private function getMonthlyExchange(int $countryId, $periods): array

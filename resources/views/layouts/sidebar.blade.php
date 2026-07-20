@@ -197,7 +197,8 @@
 
         </a>
 
-        <a href="#">
+        <a href="{{ route('favorites.index') }}"
+           class="{{ request()->routeIs('favorites.*') ? 'active' : '' }}">
 
             <i class="bi bi-star-fill"></i>
 
@@ -205,53 +206,14 @@
 
         </a>
 
-        {{-- ADMINISTRASI --}}
-        <div class="menu-title">
-            Administrasi
-        </div>
-
-        <a href="{{ route('admin.sync') }}"
-           class="{{ request()->routeIs('admin.sync') ? 'active' : '' }}">
-
-            <i class="bi bi-arrow-repeat"></i>
-
-            Sinkronisasi Data
-
-        </a>
-
-        <a href="{{ route('admin.lexicon') }}"
-           class="{{ request()->routeIs('admin.lexicon*') ? 'active' : '' }}">
-
-            <i class="bi bi-book"></i>
-
-            Kamus Berita
-
-        </a>
-
-        <a href="#">
-
-            <i class="bi bi-people-fill"></i>
-
-            Manajemen User
-
-        </a>
-
-        <a href="#">
+        <a href="{{ route('articles.index') }}"
+           class="{{ request()->routeIs('articles.*') ? 'active' : '' }}">
 
             <i class="bi bi-file-earmark-text"></i>
 
             Artikel Analisis
 
         </a>
-
-        <a href="#">
-
-            <i class="bi bi-gear-fill"></i>
-
-            Pengaturan
-
-        </a>
-
     </div>
 
     <div class="sidebar-footer">

@@ -13,8 +13,20 @@ use App\Http\Controllers\LexiconController;
 use App\Http\Controllers\PortController;
 use App\Http\Controllers\VisualizationController;
 use App\Http\Controllers\ComparisonController;
+use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
+use App\Http\Controllers\ArticleController;
 
 Route::redirect('/', '/dashboard');
+
+// Admin Auth Routes
+Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+Route::get('/admin/register', [AdminAuthController::class, 'showRegisterForm'])->name('admin.register');
+Route::post('/admin/register', [AdminAuthController::class, 'register'])->name('admin.register.submit');
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 Route::middleware(['auth'])->group(function () {
 
@@ -31,76 +43,38 @@ Route::middleware(['auth'])->group(function () {
         ->name('profile.destroy');
     
     Route::get('/countries', [CountryController::class,'index'])
-    ->name('countries.index');
+        ->name('countries.index');
+
+    Route::get('/countries/{id}', [CountryController::class, 'show'])
+        ->name('countries.show');
 
     Route::get('/weather', [App\Http\Controllers\WeatherController::class, 'index'])
-    ->name('weather.index');
+        ->name('weather.index');
 
-    Route::post('/sync/countries', [SyncController::class, 'countries'])
-    ->name('sync.countries');
-
-    Route::get('/admin/sync', [SyncController::class, 'index'])
-    ->name('admin.sync');
-
-    Route::get('/weather', [App\Http\Controllers\WeatherController::class, 'index'])
-    ->name('weather.index');
-
-    Route::post('/sync/weather', [SyncController::class, 'weather'])
-    ->name('sync.weather');
+    Route::get('/api/weather/map-data', [App\Http\Controllers\WeatherController::class, 'getMapData'])
+        ->name('api.weather.map-data');
 
     Route::get('/exchange', [ExchangeRateController::class, 'index'])
-    ->name('exchange.index');
-
-    Route::post('/sync/exchange-rate', [SyncController::class, 'exchangeRate'])
-    ->name('sync.exchange-rate');
-
-    Route::post('/sync/economy', [SyncController::class, 'economy'])
-    ->name('sync.economy');
+        ->name('exchange.index');
 
     Route::get('/economy', [EconomyController::class, 'index'])
-    ->name('economy.index');
+        ->name('economy.index');
 
     Route::get('/risk', [RiskController::class, 'index'])
-    ->name('risk.index');
-
-    Route::post('/sync/risk', [SyncController::class, 'risk'])
-    ->name('sync.risk');
+        ->name('risk.index');
 
     Route::get('/news', [NewsController::class, 'index'])
-    ->name('news.index');
-    Route::post('/sync/news', [SyncController::class, 'news'])
-    ->name('sync.news');
+        ->name('news.index');
 
-    // Port Sync
-    Route::post('/sync/ports', [SyncController::class, 'ports'])
-    ->name('sync.ports');
-
-    // Port Location Dashboard
     Route::get('/ports', [PortController::class, 'index'])
-    ->name('ports.index');
+        ->name('ports.index');
     
     Route::get('/api/ports/data', [PortController::class, 'getData'])
-    ->name('ports.data');
-
-    // Lexicon Management (Sentiment Analysis)
-    Route::get('/admin/lexicon', [LexiconController::class, 'index'])
-    ->name('admin.lexicon');
-    
-    Route::post('/admin/lexicon/positive', [LexiconController::class, 'storePositive'])
-    ->name('admin.lexicon.positive.store');
-    
-    Route::delete('/admin/lexicon/positive/{positiveWord}', [LexiconController::class, 'destroyPositive'])
-    ->name('admin.lexicon.positive.destroy');
-    
-    Route::post('/admin/lexicon/negative', [LexiconController::class, 'storeNegative'])
-    ->name('admin.lexicon.negative.store');
-    
-    Route::delete('/admin/lexicon/negative/{negativeWord}', [LexiconController::class, 'destroyNegative'])
-    ->name('admin.lexicon.negative.destroy');
+        ->name('ports.data');
 
     // Data Visualization Dashboard
     Route::get('/visualizations', [VisualizationController::class, 'index'])
-    ->name('visualizations.index');
+        ->name('visualizations.index');
     
     // API endpoints untuk chart data
     Route::prefix('api/visualizations')->group(function () {
@@ -116,7 +90,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/risk-scores', [VisualizationController::class, 'getRiskScoreData'])
         ->name('api.visualizations.risk-scores');
         
-        // New endpoints
         Route::get('/risk-distribution', [VisualizationController::class, 'getRiskDistribution'])
         ->name('api.visualizations.risk-distribution');
         
@@ -162,6 +135,89 @@ Route::middleware(['auth'])->group(function () {
         ->name('comparison.index');
     Route::get('/api/comparison', [ComparisonController::class, 'compare'])
         ->name('api.comparison');
+
+    // Favorite Monitoring List
+    Route::get('/favorites', [WatchlistController::class, 'index'])
+        ->name('favorites.index');
+    Route::post('/favorites/toggle', [WatchlistController::class, 'toggle'])
+        ->name('favorites.toggle');
+
+    // Public Articles
+    Route::get('/articles', [ArticleController::class, 'index'])
+        ->name('articles.index');
+    Route::get('/articles/{slug}', [ArticleController::class, 'show'])
+        ->name('articles.show');
+
+    // ==========================================
+    // ADMIN PORTAL ROUTES
+    // ==========================================
+    Route::middleware(['is_admin'])->group(function () {
+        
+        Route::get('/admin/sync', [SyncController::class, 'index'])
+            ->name('admin.sync');
+            
+        Route::post('/sync/countries', [SyncController::class, 'countries'])
+            ->name('sync.countries');
+        Route::post('/sync/weather', [SyncController::class, 'weather'])
+            ->name('sync.weather');
+        Route::post('/sync/exchange-rate', [SyncController::class, 'exchangeRate'])
+            ->name('sync.exchange-rate');
+        Route::post('/sync/economy', [SyncController::class, 'economy'])
+            ->name('sync.economy');
+        Route::post('/sync/risk', [SyncController::class, 'risk'])
+            ->name('sync.risk');
+        Route::post('/sync/news', [SyncController::class, 'news'])
+            ->name('sync.news');
+        Route::post('/sync/ports', [SyncController::class, 'ports'])
+            ->name('sync.ports');
+
+        // Lexicon Management (Sentiment Analysis)
+        Route::get('/admin/lexicon', [LexiconController::class, 'index'])
+            ->name('admin.lexicon');
+        Route::post('/admin/lexicon/positive', [LexiconController::class, 'storePositive'])
+            ->name('admin.lexicon.positive.store');
+        Route::delete('/admin/lexicon/positive/{positiveWord}', [LexiconController::class, 'destroyPositive'])
+            ->name('admin.lexicon.positive.destroy');
+        Route::post('/admin/lexicon/negative', [LexiconController::class, 'storeNegative'])
+            ->name('admin.lexicon.negative.store');
+        Route::delete('/admin/lexicon/negative/{negativeWord}', [LexiconController::class, 'destroyNegative'])
+            ->name('admin.lexicon.negative.destroy');
+
+        // User Management
+        Route::get('/admin/users', [UserController::class, 'index'])
+            ->name('admin.users.index');
+        Route::get('/admin/users/create', [UserController::class, 'create'])
+            ->name('admin.users.create');
+        Route::post('/admin/users', [UserController::class, 'store'])
+            ->name('admin.users.store');
+        Route::get('/admin/users/{user}/edit', [UserController::class, 'edit'])
+            ->name('admin.users.edit');
+        Route::put('/admin/users/{user}', [UserController::class, 'update'])
+            ->name('admin.users.update');
+        Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])
+            ->name('admin.users.destroy');
+        Route::post('/admin/users/{user}/toggle-admin', [UserController::class, 'toggleAdmin'])
+            ->name('admin.users.toggle-admin');
+
+        // Article Management
+        Route::get('/admin/articles', [AdminArticleController::class, 'index'])
+            ->name('admin.articles.index');
+        Route::get('/admin/articles/create', [AdminArticleController::class, 'create'])
+            ->name('admin.articles.create');
+        Route::post('/admin/articles', [AdminArticleController::class, 'store'])
+            ->name('admin.articles.store');
+        Route::get('/admin/articles/{article}/edit', [AdminArticleController::class, 'edit'])
+            ->name('admin.articles.edit');
+        Route::put('/admin/articles/{article}', [AdminArticleController::class, 'update'])
+            ->name('admin.articles.update');
+        Route::delete('/admin/articles/{article}', [AdminArticleController::class, 'destroy'])
+            ->name('admin.articles.destroy');
+        Route::post('/admin/articles/{article}/publish', [AdminArticleController::class, 'publish'])
+            ->name('admin.articles.publish');
+        Route::post('/admin/articles/{article}/archive', [AdminArticleController::class, 'archive'])
+            ->name('admin.articles.archive');
+            
+    });
 });
 
 require __DIR__.'/auth.php';
