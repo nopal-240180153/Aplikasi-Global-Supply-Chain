@@ -216,7 +216,29 @@
     <!-- Grafik -->
     <div class="card border-0 shadow-sm rounded-3 mb-4">
         <div class="card-header bg-white border-bottom-0 pt-4 pb-2">
-            <h6 class="fw-bold mb-0 text-dark">10 Negara dengan Risiko Tertinggi</h6>
+            @php
+                $chartTitle = '10 Negara dengan Risiko Tertinggi';
+                $chartColor = '#3b82f6'; // Blue default
+                
+                if(request('risk_level') == 'Rendah') {
+                    $chartTitle = 'Top 10 Negara dengan Risiko Rendah';
+                    $chartColor = '#10b981'; // Green
+                } elseif(request('risk_level') == 'Sedang') {
+                    $chartTitle = 'Top 10 Negara dengan Risiko Sedang';
+                    $chartColor = '#f59e0b'; // Yellow/Orange
+                } elseif(request('risk_level') == 'Tinggi') {
+                    $chartTitle = 'Top 10 Negara dengan Risiko Tinggi';
+                    $chartColor = '#ef4444'; // Red
+                }
+            @endphp
+            <h6 class="fw-bold mb-0 text-dark">{{ $chartTitle }}</h6>
+            @if(request('risk_level'))
+                <small class="text-muted">Filter aktif: <span class="badge 
+                    {{ request('risk_level') == 'Rendah' ? 'bg-success' : '' }}
+                    {{ request('risk_level') == 'Sedang' ? 'bg-warning text-dark' : '' }}
+                    {{ request('risk_level') == 'Tinggi' ? 'bg-danger' : '' }}
+                ">{{ request('risk_level') }}</span></small>
+            @endif
         </div>
         <div class="card-body">
             <div style="height: 300px;">
@@ -302,6 +324,16 @@ document.addEventListener('DOMContentLoaded', function() {
         $topRisks = collect($risks->items())->sortByDesc('total_score')->take(10);
         $topLabels = $topRisks->pluck('country.name')->toJson();
         $topData = $topRisks->pluck('total_score')->toJson();
+        
+        // Dynamic chart color based on filter
+        $chartColor = '#3b82f6'; // Blue default
+        if(request('risk_level') == 'Rendah') {
+            $chartColor = '#10b981'; // Green
+        } elseif(request('risk_level') == 'Sedang') {
+            $chartColor = '#f59e0b'; // Yellow/Orange
+        } elseif(request('risk_level') == 'Tinggi') {
+            $chartColor = '#ef4444'; // Red
+        }
     @endphp
 
     const ctx = document.getElementById('topRiskChart').getContext('2d');
@@ -312,7 +344,7 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Total Skor Risiko',
                 data: {!! $topData !!},
-                backgroundColor: '#3b82f6',
+                backgroundColor: '{{ $chartColor }}',
                 borderRadius: 4,
                 barPercentage: 0.5
             }]
@@ -321,11 +353,33 @@ document.addEventListener('DOMContentLoaded', function() {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { display: false }
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return 'Skor Risiko: ' + context.parsed.y.toFixed(1);
+                        }
+                    }
+                }
             },
             scales: {
-                y: { beginAtZero: true, max: 100, grid: { borderDash: [4, 4] } },
-                x: { grid: { display: false } }
+                y: { 
+                    beginAtZero: true, 
+                    max: 100, 
+                    grid: { borderDash: [4, 4] },
+                    ticks: {
+                        callback: function(value) {
+                            return value;
+                        }
+                    }
+                },
+                x: { 
+                    grid: { display: false },
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
             }
         }
     });

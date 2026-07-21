@@ -4,21 +4,11 @@
 
         <div class="row align-items-center">
 
-            <div class="col-md-6">
+            <div class="col-md-12 text-center">
 
                 <small class="text-muted">
 
                     © {{ date('Y') }} Global Supply Chain Monitoring System
-
-                </small>
-
-            </div>
-
-            <div class="col-md-6 text-md-end">
-
-                <small class="text-muted">
-
-                    Dibangun menggunakan Laravel 12 | Bootstrap 5 | Chart.js | Leaflet.js
 
                 </small>
 

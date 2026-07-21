@@ -67,15 +67,36 @@ class RiskSyncService
 
             /*
             |--------------------------------------------------------------------------
-            | Hitung News Score
+            | Hitung News Score (Normalized to 0-100)
+            |--------------------------------------------------------------------------
+            | Logic:
+            | - Sentiment Score range: -10 to +10 (dari lexicon analysis)
+            | - Negative sentiment = High Risk (score tinggi)
+            | - Positive sentiment = Low Risk (score rendah)
+            | - Neutral = Medium Risk
             |--------------------------------------------------------------------------
             */
 
-            $newsScore = NewsArticle::where('country_id', $country->id)
+            $avgSentiment = NewsArticle::where('country_id', $country->id)
                 ->avg('sentiment_score');
 
-            if ($newsScore === null) {
-                $newsScore = 0;
+            if ($avgSentiment === null) {
+                // No news data → assume medium risk
+                $newsScore = 50;
+            } else {
+                // Normalize sentiment to risk score (0-100)
+                // Formula: newsScore = 50 - (avgSentiment * 5)
+                // Examples:
+                // - avgSentiment = -10 (very negative) → newsScore = 100 (high risk)
+                // - avgSentiment = -5 (negative) → newsScore = 75
+                // - avgSentiment = 0 (neutral) → newsScore = 50 (medium risk)
+                // - avgSentiment = +5 (positive) → newsScore = 25
+                // - avgSentiment = +10 (very positive) → newsScore = 0 (low risk)
+                
+                $newsScore = 50 - ($avgSentiment * 5);
+                
+                // Clamp between 0 and 100
+                $newsScore = max(0, min(100, $newsScore));
             }
 
             /*

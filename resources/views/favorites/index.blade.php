@@ -61,7 +61,7 @@
                                 @endif
                             </td>
                             <td>
-                                <a href="{{ route('comparison.index') }}?country_a={{ $country->id }}" class="text-decoration-none fw-bold text-dark">
+                                <a href="{{ route('countries.show', $country->id) }}" class="text-decoration-none fw-bold text-dark">
                                     {{ $country->name }}
                                 </a>
                             </td>
@@ -93,12 +93,19 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <button type="button" 
-                                        class="btn btn-sm btn-light text-danger btn-remove-favorite" 
-                                        data-id="{{ $country->id }}"
-                                        title="Hapus dari Pantauan">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                                <div class="btn-group" role="group">
+                                    <a href="{{ route('countries.show', $country->id) }}" 
+                                       class="btn btn-sm btn-light text-primary" 
+                                       title="Lihat Detail">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-light text-danger btn-remove-favorite" 
+                                            data-id="{{ $country->id }}"
+                                            title="Hapus dari Pantauan">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         @endif

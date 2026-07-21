@@ -169,7 +169,7 @@
     <div class="col-lg-6">
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-header bg-white border-0 pt-4 pb-3">
-                <h6 class="fw-bold mb-0">Distribusi Negara per Benua</h6>
+                <h6 class="fw-bold mb-0">📊 Jumlah Negara per Benua</h6>
             </div>
             <div class="card-body">
                 <div style="height: 300px;">
@@ -183,7 +183,7 @@
     <div class="col-lg-6">
         <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-header bg-white border-0 pt-4 pb-3">
-                <h6 class="fw-bold mb-0">Distribusi Tingkat Risiko</h6>
+                <h6 class="fw-bold mb-0">⚠️ Kategori Risiko Negara</h6>
             </div>
             <div class="card-body">
                 <div style="height: 300px;">
@@ -195,7 +195,7 @@
 
 </div>
 
-<!-- Map and Recent Sync -->
+<!-- Map and Statistics -->
 <div class="row g-4 mb-4">
     
     <!-- Map -->
@@ -212,41 +212,111 @@
         </div>
     </div>
 
-    <!-- Recent Sync -->
+    <!-- Top Risk Countries -->
     <div class="col-lg-4">
-        <div class="card border-0 shadow-sm rounded-4">
+        <div class="card border-0 shadow-sm rounded-4 h-100">
             <div class="card-header bg-white border-0 pt-4 pb-3">
                 <h6 class="fw-bold mb-0">
-                    <i class="bi bi-clock-history"></i> Log Sinkronisasi Terbaru
+                    <i class="bi bi-exclamation-triangle"></i> Negara Risiko Tinggi
                 </h6>
             </div>
             <div class="card-body">
-                @forelse($recentSync as $sync)
-                    <div class="mb-3 pb-3 {{ !$loop->last ? 'border-bottom' : '' }}">
-                        <div class="d-flex justify-content-between align-items-start mb-1">
-                            <strong class="text-dark">{{ $sync->sync_type }}</strong>
-                            @if($sync->status == 'completed')
-                                <span class="badge bg-success">Berhasil</span>
-                            @elseif($sync->status == 'failed')
-                                <span class="badge bg-danger">Gagal</span>
-                            @else
-                                <span class="badge bg-warning">{{ $sync->status }}</span>
-                            @endif
+                @if($topRiskCountries && $topRiskCountries->count() > 0)
+                    @foreach($topRiskCountries->take(5) as $country)
+                        <div class="mb-3 pb-3 {{ !$loop->last ? 'border-bottom' : '' }}">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <strong class="text-dark d-block">{{ $country->name }}</strong>
+                                    <small class="text-muted">
+                                        <i class="bi bi-geo-alt"></i> {{ $country->continent ?? 'N/A' }}
+                                    </small>
+                                </div>
+                                <span class="badge bg-danger">
+                                    {{ number_format($country->risk_score, 1) }}
+                                </span>
+                            </div>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar bg-danger" 
+                                     role="progressbar" 
+                                     style="width: {{ ($country->risk_score / 10) * 100 }}%"
+                                     aria-valuenow="{{ $country->risk_score }}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="10">
+                                </div>
+                            </div>
                         </div>
-                        <small class="text-muted">
-                            <i class="bi bi-calendar3"></i> 
-                            {{ optional($sync->finished_at)->format('d M Y H:i') ?? 'N/A' }}
-                        </small>
-                        @if($sync->records_synced)
-                            <br><small class="text-muted">{{ $sync->records_synced }} data tersinkronisasi</small>
-                        @endif
+                    @endforeach
+                    <div class="text-center mt-3">
+                        <a href="{{ route('risk.index') }}" class="btn btn-sm btn-outline-primary">
+                            Lihat Semua Risiko <i class="bi bi-arrow-right"></i>
+                        </a>
                     </div>
-                @empty
+                @else
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-shield-check fs-3 d-block mb-2"></i>
+                        <small>Tidak ada data risiko</small>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Recent News & Quick Actions -->
+<div class="row g-4 mb-4">
+    
+    <!-- Recent News (Full Width) -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 pb-3 d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold mb-0">
+                    <i class="bi bi-newspaper"></i> Berita Terbaru
+                </h6>
+                <a href="{{ route('news.index') }}" class="btn btn-sm btn-outline-primary">
+                    Lihat Semua
+                </a>
+            </div>
+            <div class="card-body">
+                @if($recentNews && $recentNews->count() > 0)
+                    @foreach($recentNews->take(4) as $news)
+                        <div class="mb-3 pb-3 {{ !$loop->last ? 'border-bottom' : '' }}">
+                            <div class="d-flex gap-3">
+                                @if($news->image_url)
+                                    <img src="{{ $news->image_url }}" 
+                                         alt="{{ $news->title }}" 
+                                         class="rounded"
+                                         style="width: 80px; height: 80px; object-fit: cover;"
+                                         onerror="this.style.display='none'">
+                                @endif
+                                <div class="flex-grow-1">
+                                    <a href="{{ $news->url }}" target="_blank" class="text-decoration-none">
+                                        <h6 class="fw-bold text-dark mb-1">{{ Str::limit($news->title, 80) }}</h6>
+                                    </a>
+                                    <p class="text-muted small mb-2">
+                                        {{ Str::limit($news->description ?? '', 120) }}
+                                    </p>
+                                    <div class="d-flex gap-2 align-items-center">
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar3"></i> 
+                                            {{ $news->published_at ? $news->published_at->format('d M Y') : 'N/A' }}
+                                        </small>
+                                        @if($news->sentiment_score !== null)
+                                            <span class="badge {{ $news->sentiment_score > 0 ? 'bg-success' : ($news->sentiment_score < 0 ? 'bg-danger' : 'bg-secondary') }}">
+                                                {{ $news->sentiment_score > 0 ? 'Positif' : ($news->sentiment_score < 0 ? 'Negatif' : 'Netral') }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                @else
                     <div class="text-center text-muted py-4">
                         <i class="bi bi-inbox fs-3 d-block mb-2"></i>
-                        <small>Belum ada sync log</small>
+                        <small>Belum ada berita</small>
                     </div>
-                @endforelse
+                @endif
             </div>
         </div>
     </div>

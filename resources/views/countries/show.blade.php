@@ -95,11 +95,26 @@
                 $riskColor = 'secondary';
                 $riskBg = '#f8f9fa';
                 $riskIcon = 'bi-shield-check';
+                $riskLevel = 'N/A';
                 
-                if($risk) {
-                    if($risk->risk_level == 'Rendah') { $riskColor = 'success'; $riskBg = '#ecfdf5'; $riskIcon = 'bi-shield-check'; }
-                    elseif($risk->risk_level == 'Sedang') { $riskColor = 'warning'; $riskBg = '#fffbeb'; $riskIcon = 'bi-shield-exclamation'; }
-                    elseif($risk->risk_level == 'Tinggi') { $riskColor = 'danger'; $riskBg = '#fef2f2'; $riskIcon = 'bi-shield-x'; }
+                if($risk && $risk->total_score) {
+                    // Calculate risk level based on total_score
+                    if($risk->total_score >= 30) {
+                        $riskLevel = 'Tinggi';
+                        $riskColor = 'danger';
+                        $riskBg = '#fef2f2';
+                        $riskIcon = 'bi-shield-x';
+                    } elseif($risk->total_score >= 20) {
+                        $riskLevel = 'Sedang';
+                        $riskColor = 'warning';
+                        $riskBg = '#fffbeb';
+                        $riskIcon = 'bi-shield-exclamation';
+                    } else {
+                        $riskLevel = 'Rendah';
+                        $riskColor = 'success';
+                        $riskBg = '#ecfdf5';
+                        $riskIcon = 'bi-shield-check';
+                    }
                 }
             @endphp
             
@@ -108,7 +123,7 @@
                     <div>
                         <h6 class="text-muted fw-bold mb-1 text-uppercase" style="letter-spacing: 1px; font-size: 0.8rem;">Skor Analisis Risiko</h6>
                         <h2 class="fw-bold mb-0 text-{{ $riskColor }}">
-                            {{ $risk ? $risk->total_score : 'N/A' }} <span class="fs-6 text-muted fw-normal">/ 100</span>
+                            {{ $risk ? number_format($risk->total_score, 1) : 'N/A' }} <span class="fs-6 text-muted fw-normal">/ 100</span>
                         </h2>
                     </div>
                     <div class="bg-{{ $riskColor }} bg-opacity-10 p-3 rounded-circle text-{{ $riskColor }}">
@@ -118,10 +133,10 @@
                 
                 @if($risk)
                 <div class="progress mb-2" style="height: 8px;">
-                    <div class="progress-bar bg-{{ $riskColor }}" role="progressbar" style="width: {{ $risk->total_score }}%"></div>
+                    <div class="progress-bar bg-{{ $riskColor }}" role="progressbar" style="width: {{ min($risk->total_score, 100) }}%"></div>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <small class="text-muted fw-semibold">Status: <span class="text-{{ $riskColor }}">{{ $risk->risk_level }}</span></small>
+                    <small class="text-muted fw-semibold">Tingkat Risiko: <span class="text-{{ $riskColor }} fw-bold">{{ $riskLevel }}</span></small>
                     <small class="text-muted">{{ optional($risk->calculated_at)->diffForHumans() }}</small>
                 </div>
                 @else

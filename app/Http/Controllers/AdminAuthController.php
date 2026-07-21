@@ -16,11 +16,6 @@ class AdminAuthController extends Controller
         if (Auth::check() && Auth::user()->is_admin) {
             return redirect()->route('admin.sync');
         }
-        
-        // Jika sudah login tapi bukan admin, arahkan ke dashboard biasa
-        if (Auth::check() && !Auth::user()->is_admin) {
-            return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses ke portal admin.');
-        }
 
         return view('admin.login');
     }

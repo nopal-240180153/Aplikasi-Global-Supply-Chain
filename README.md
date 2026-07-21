@@ -1,60 +1,63 @@
-# Global Supply Chain Risk Intelligence Platform
+# 🌍 Global Supply Chain Risk Intelligence Platform
 
-Platform monitoring risiko rantai pasok global berbasis multi-API dan analitik data menggunakan Laravel.
+Platform monitoring risiko rantai pasok global berbasis web dengan integrasi multi-API, sentiment analysis, dan visualisasi data interaktif menggunakan Laravel.
 
-## 📋 Fitur Utama
+## 📋 Fitur Utama (10 Fitur)
 
-- 🌍 **Global Country Dashboard** - Monitoring data negara global
-- 🌦️ **Weather Monitoring** - Pemantauan cuaca real-time
-- 💱 **Exchange Rate Tracking** - Tracking nilai tukar mata uang
-- 📊 **Economic Analysis** - Analisis data ekonomi (GDP, inflasi, ekspor/impor)
-- 📰 **News Intelligence** - Agregasi berita terkait supply chain
-- ⚠️ **Risk Scoring Engine** - Sistem scoring risiko otomatis
-- 🗺️ **Interactive Map** - Visualisasi data dengan Leaflet.js
-- 📈 **Data Visualization** - Chart dan grafik dengan Chart.js
-- 🔄 **Auto Sync** - Sinkronisasi otomatis setiap 8 jam
+1. **📊 Dashboard Interaktif** - Overview statistik, chart distribusi negara & risiko, top risk countries
+2. **🌍 Data Negara Lengkap** - 254 negara dengan detail ekonomi, cuaca, risiko & peta interaktif
+3. **⚠️ Analisis Risiko Supply Chain** - Multi-factor risk scoring dengan filter dinamis
+4. **💰 Data Ekonomi** - GDP, exports, imports, trade balance dari World Bank API
+5. **🌦️ Monitoring Cuaca** - Real-time weather data (suhu, curah hujan, kelembaban, angin)
+6. **💱 Nilai Tukar Mata Uang** - 247 currencies dengan 4 interactive charts
+7. **📰 Berita Global & Sentiment Analysis** - Artikel berita dengan lexicon-based sentiment (-10 to +10)
+8. **⚓ Peta Pelabuhan Global** - 126 ports dengan Leaflet.js interactive map
+9. **📈 Visualisasi & Perbandingan Data** - Multi-country comparison dengan Chart.js
+10. **⭐ Watchlist / Favorit** - Manajemen negara favorit user
+
+### ✨ Bonus Features:
+- 🔐 **Admin Portal** - Sync management, lexicon editor, user & article management
+- 🔌 **REST API v1** - API endpoints untuk integrasi eksternal
+- 🔄 **Background Jobs** - Queue system untuk data sync
+- 📱 **Responsive Design** - Mobile-friendly Bootstrap 5 + Tailwind CSS
+
+---
 
 ## 🚀 Quick Start
 
 ### 1. Install Dependencies
-
 ```bash
 composer install
 npm install
 ```
 
 ### 2. Setup Environment
-
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
 ### 3. Setup Database
-
 ```bash
 php artisan migrate
+php artisan db:seed
 ```
 
 ### 4. Build Assets
-
 ```bash
 npm run build
 ```
 
 ### 5. Start Development Server
-
 ```bash
 php artisan serve
 ```
 
 ### 6. Start Auto Sync (Optional)
-
 **Windows:**
 ```bash
 start-scheduler.bat
 ```
-
 **Manual:**
 ```bash
 # Terminal 1: Queue Worker
@@ -64,14 +67,14 @@ php artisan queue:work
 php artisan schedule:work
 ```
 
+---
+
 ## 🔄 Auto Sync Setup
 
 Sistem ini memiliki fitur **auto sync setiap 8 jam** untuk mengambil data terbaru dari API eksternal.
 
 ### Windows (Development)
-
 Jalankan file batch yang sudah disediakan:
-
 ```bash
 # Start services
 start-scheduler.bat
@@ -80,72 +83,99 @@ start-scheduler.bat
 stop-scheduler.bat
 ```
 
-### Manual Setup
-
-Lihat dokumentasi lengkap di [SCHEDULER_SETUP.md](SCHEDULER_SETUP.md)
-
 ### Manual Sync
-
 Untuk sync manual semua data:
-
 ```bash
 php artisan sync:all
 ```
-
 Atau gunakan UI di menu **Admin > Sync**
 
-## 🌐 API yang Digunakan
+---
 
-Aplikasi ini mengintegrasikan beberapa API gratis:
+## 🌐 External API Integration
 
-1. **Open-Meteo API** - Data cuaca global (tanpa API key)
-2. **World Bank API** - Data ekonomi (tanpa API key)
-3. **REST Countries API** - Data negara (tanpa API key)
-4. **ExchangeRate API** - Nilai tukar mata uang
-5. **GNews API** - Berita global
-6. **World Port Index** - Data pelabuhan
+Aplikasi ini mengintegrasikan **6 API eksternal**:
+
+| API | Purpose | Auth |
+|-----|---------|------|
+| **REST Countries API** | Data negara (nama, bendera, populasi, koordinat) | API Key |
+| **World Bank API** | Data ekonomi (GDP, exports, imports, trade balance) | Public |
+| **ExchangeRate API** | Nilai tukar mata uang real-time vs USD | API Key |
+| **Open-Meteo API** | Data cuaca & iklim (suhu, hujan, kelembaban, angin) | Public |
+| **GNews API** | Berita global untuk sentiment analysis | API Key |
+| **World Port Index** | Lokasi pelabuhan global dengan koordinat GPS | Static JSON |
+
+**API Keys sudah tersedia di `.env` file** - tinggal pakai!
+
+---
 
 ## 📊 Tech Stack
 
 ### Backend
-- PHP 8.3
-- Laravel 13
-- MySQL
+- **PHP 8.3** - Modern PHP with latest features
+- **Laravel 11+** - Framework PHP
+- **MySQL** - Relational database (22 tables)
+- **Laravel Queue** - Background job processing
+- **Repository Pattern** - Clean data layer separation
 
 ### Frontend
-- Bootstrap 5
-- Chart.js
-- Leaflet.js
-- AJAX & JavaScript ES6
+- **Bootstrap 5.3** - Main UI framework
+- **Tailwind CSS 3.1** - Utility-first CSS
+- **Chart.js 4.x** - Interactive charts & graphs
+- **Leaflet.js** - Interactive maps (ports & countries)
+- **Alpine.js 3.4** - Reactive JavaScript framework
+- **Bootstrap Icons** - Icon library
 
-### Tools
-- Laravel Queue untuk background jobs
-- Laravel Scheduler untuk auto sync
-- Blade Templates
+### Architecture
+- **MVC Pattern** - Clean separation of concerns
+- **Service Layer** - Business logic isolation
+- **Repository Pattern** - Data access abstraction
+- **Job Queue System** - Async background processing
+- **RESTful API** - API v1 with versioning
+
+### Development Tools
+- **Vite** - Fast build tool
+- **Composer** - PHP dependency manager
+- **NPM** - JavaScript package manager
+
+---
 
 ## 📁 Struktur Project
 
 ```
 ├── app/
-│   ├── Http/Controllers/      # Controllers
-│   ├── Models/                 # Eloquent Models
-│   ├── Jobs/                   # Background Jobs
-│   ├── Repositories/           # Data Layer
-│   └── Services/               # Business Logic
+│   ├── Http/
+│   │   ├── Controllers/           # 22 controllers (Dashboard, Country, Risk, dll)
+│   │   ├── Middleware/            # IsAdmin middleware
+│   ├── Models/                    # 15 Eloquent models
+│   ├── Jobs/                      # 7 background sync jobs
+│   ├── Repositories/              # 6 repository classes
+│   └── Services/
+│       ├── API/                   # 6 API service integrations
+│       ├── Mappers/               # Data mapping classes
+│       └── Risk/                  # Risk calculation engine
 ├── database/
-│   └── migrations/             # Database Schema
+│   ├── migrations/                # 22 database tables
+│   └── seeders/                   # Initial data seeders
 ├── resources/
-│   ├── views/                  # Blade Templates
-│   └── js/                     # JavaScript
+│   ├── views/                     # 25+ Blade templates
+│   │   ├── admin/                 # Admin portal views
+│   │   ├── countries/             # Country pages
+│   │   ├── dashboard/             # Dashboard
+│   │   └── layouts/               # Layout templates
+│   └── js/                        # JavaScript modules
 ├── routes/
-│   ├── web.php                 # Web Routes
-│   ├── api.php                 # API Routes
-│   └── console.php             # Scheduled Tasks
-└── public/                     # Public Assets
+│   ├── web.php                    # Web routes (user + admin)
+│   ├── api.php                    # REST API routes (v1)
+│   └── console.php                # Artisan commands
+├── storage/
+│   └── app/data/                  # Static JSON data (ports)
+└── public/                        # Public assets & entry point
 ```
 
-## 🗄️ Database Tables
+---
 
+## 🗄️ Database Tables
 - `countries` - Data negara
 - `currencies` - Mata uang
 - `economy_data` - Data ekonomi
@@ -156,29 +186,46 @@ Aplikasi ini mengintegrasikan beberapa API gratis:
 - `ports` - Data pelabuhan
 - `sync_logs` - Log sinkronisasi
 
-## 🎯 Jadwal Auto Sync
+---
 
+## 🎯 Jadwal Auto Sync
 Sinkronisasi otomatis berjalan setiap **8 jam** pada:
 - 00:00 (tengah malam)
 - 08:00 (pagi)
 - 16:00 (sore)
 
 **Urutan sync:**
-1. Countries (00:00)
-2. Weather (00:05)
-3. Exchange Rates (00:10)
-4. Economy Data (00:15)
-5. News (00:20)
-6. Risk Analysis (00:25)
-
-## 📝 License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-
-## 📧 Contact
-
-Untuk pertanyaan atau bantuan, silakan hubungi developer.
+1. Countries
+2. Weather
+3. Exchange Rates
+4. Economy Data
+5. News
+6. Risk Analysis
 
 ---
 
-**💡 Tip:** Pastikan queue worker dan scheduler berjalan untuk auto sync. Gunakan `start-scheduler.bat` di Windows.
+## 🌐 Deployment (InfinityFree)
+
+Platform ini telah disiapkan untuk deployment ke **InfinityFree** (100% gratis).
+
+### Quick Deployment Steps:
+1. **Export Database**: `mysqldump -u root global_supply_chain > database.sql`
+2. **Registrasi InfinityFree**: Buat hosting account.
+3. **Upload Files**: ZIP project (tanpa `vendor/`, `node_modules/`, `.env`), upload via cPanel File Manager. Struktur: `/laravel-app/` (app) dan `/htdocs/` (public).
+4. **Setup Database**: Buat database MySQL di cPanel, import `database.sql`.
+5. **Konfigurasi Environment**: Buat `.env`, sesuaikan credentials, set `APP_ENV=production` & `APP_DEBUG=false`.
+6. **Testing**: Akses domain, test semua fitur & API.
+
+*Catatan: InfinityFree tidak support Laravel scheduler otomatis, sehingga sync data harus dilakukan manual via Admin Panel.*
+
+---
+
+## 📚 Dokumentasi Tambahan
+
+- 📖 `DEPLOYMENT_GUIDE.md` - Panduan deployment lengkap InfinityFree
+- 📖 `REST_API_DOCUMENTATION.md` - API endpoints & usage
+- 📖 `WEATHER_MAP_FEATURE.md` - Dokumentasi fitur peta cuaca
+- 📖 `EXCHANGE_RATE_CHARTS_IMPROVEMENT.md` - Fitur chart nilai tukar
+
+## 📝 License
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

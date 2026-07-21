@@ -22,22 +22,42 @@ class RiskController extends Controller
             });
         }
 
-        // Filter by risk level
+        // Filter by risk level (calculated from total_score)
         if ($request->filled('risk_level')) {
-            $query->where('risk_level', $request->input('risk_level'));
+            $riskLevel = $request->input('risk_level');
+            
+            if ($riskLevel === 'Tinggi') {
+                $query->where('total_score', '>=', 30);
+            } elseif ($riskLevel === 'Sedang') {
+                $query->where('total_score', '>=', 20)
+                      ->where('total_score', '<', 30);
+            } elseif ($riskLevel === 'Rendah') {
+                $query->where('total_score', '<', 20);
+            }
         }
 
         $risks = $query->orderByDesc('total_score')
             ->paginate(20)
             ->withQueryString();
+        
+        // Calculate risk level for each item
+        foreach ($risks as $risk) {
+            if ($risk->total_score >= 30) {
+                $risk->risk_level = 'Tinggi';
+            } elseif ($risk->total_score >= 20) {
+                $risk->risk_level = 'Sedang';
+            } else {
+                $risk->risk_level = 'Rendah';
+            }
+        }
 
         $totalCountry = RiskScore::count();
 
-        $highRisk = RiskScore::where('risk_level', 'Tinggi')->count();
-
-        $mediumRisk = RiskScore::where('risk_level', 'Sedang')->count();
-
-        $lowRisk = RiskScore::where('risk_level', 'Rendah')->count();
+        // Count by calculated risk level
+        $highRisk = RiskScore::where('total_score', '>=', 30)->count();
+        $mediumRisk = RiskScore::where('total_score', '>=', 20)
+                               ->where('total_score', '<', 30)->count();
+        $lowRisk = RiskScore::where('total_score', '<', 20)->count();
 
         return view('risk.index', compact(
 

@@ -19,7 +19,11 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\ArticleController;
 
-Route::redirect('/', '/dashboard');
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Route::redirect('/home', '/dashboard');
 
 // Admin Auth Routes
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');

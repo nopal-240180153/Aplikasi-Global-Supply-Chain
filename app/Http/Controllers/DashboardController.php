@@ -6,7 +6,8 @@ use App\Models\Country;
 use App\Models\WeatherLog;
 use App\Models\ExchangeRate;
 use App\Models\EconomyData;
-use App\Models\SyncLog;
+use App\Models\NewsArticle;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -60,22 +61,43 @@ class DashboardController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Chart Risk
+        | Chart Risk - Fixed to use actual risk_scores
         |--------------------------------------------------------------------------
         */
 
-        $riskChart = Country::selectRaw('risk_level, COUNT(*) as total')
+        $riskChart = DB::table('countries')
+            ->join('risk_scores', 'countries.id', '=', 'risk_scores.country_id')
+            ->selectRaw("
+                CASE
+                    WHEN risk_scores.total_score >= 30 THEN 'High'
+                    WHEN risk_scores.total_score >= 20 THEN 'Medium'
+                    ELSE 'Low'
+                END as risk_level,
+                COUNT(*) as total
+            ")
             ->groupBy('risk_level')
             ->get();
 
         /*
         |--------------------------------------------------------------------------
-        | Recent Sync
+        | Top Risk Countries
         |--------------------------------------------------------------------------
         */
 
-        $recentSync = SyncLog::latest('finished_at')
+        $topRiskCountries = Country::join('risk_scores', 'countries.id', '=', 'risk_scores.country_id')
+            ->select('countries.*', 'risk_scores.total_score as risk_score')
+            ->orderByDesc('risk_scores.total_score')
             ->take(5)
+            ->get();
+
+        /*
+        |--------------------------------------------------------------------------
+        | Recent News
+        |--------------------------------------------------------------------------
+        */
+
+        $recentNews = NewsArticle::orderByDesc('published_at')
+            ->take(4)
             ->get();
 
         return view('dashboard', compact(
@@ -98,7 +120,9 @@ class DashboardController extends Controller
 
             'riskChart',
 
-            'recentSync'
+            'topRiskCountries',
+
+            'recentNews'
 
         ));
     }

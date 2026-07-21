@@ -85,7 +85,6 @@
                         <th>Region</th>
                         <th>Mata Uang</th>
                         <th>Populasi</th>
-                        <th>Tingkat Risiko</th>
                         <th class="text-center">Aksi</th>
 
                     </tr>
@@ -142,20 +141,6 @@
 
                             </td>
 
-                            <td>
-
-                                @if($country->risk_level == 'Rendah')
-                                    <span class="badge bg-success">Rendah</span>
-                                @elseif($country->risk_level == 'Sedang')
-                                    <span class="badge bg-warning text-dark">Sedang</span>
-                                @elseif($country->risk_level == 'Tinggi')
-                                    <span class="badge bg-danger">Tinggi</span>
-                                @else
-                                    <span class="badge bg-secondary">-</span>
-                                @endif
-
-                            </td>
-
                             <td class="text-center">
                                 @php
                                     $isFavorited = in_array($country->id, $userWatchlists ?? []);
@@ -174,7 +159,7 @@
 
                         <tr>
 
-                            <td colspan="8" class="text-center p-5">
+                            <td colspan="7" class="text-center p-5">
 
                                 <div class="text-muted">
                                     <i class="bi bi-inbox fs-1 d-block mb-2"></i>

@@ -21,5 +21,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useBootstrap(5);
+        
+        // Force HTTPS when behind ngrok or reverse proxy
+        if (config('app.env') === 'production' || 
+            request()->header('X-Forwarded-Proto') === 'https' ||
+            str_contains(config('app.url'), 'https://')) {
+            \URL::forceScheme('https');
+        }
     }
 }
