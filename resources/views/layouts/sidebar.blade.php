@@ -190,11 +190,14 @@
 
         <a href="{{ route('comparison.index') }}"
            class="{{ request()->routeIs('comparison.*') ? 'active' : '' }}">
-
             <i class="bi bi-arrow-left-right"></i>
-
             Perbandingan Negara
+        </a>
 
+        <a href="{{ route('logistics.index') }}"
+           class="{{ request()->routeIs('logistics.*') ? 'active' : '' }}">
+            <i class="bi bi-truck"></i>
+            Logistics Simulator
         </a>
 
         <a href="{{ route('favorites.index') }}"

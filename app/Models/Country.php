@@ -61,6 +61,11 @@ class Country extends Model
         return $this->hasMany(NewsArticle::class);
     }
 
+    public function ports()
+    {
+        return $this->hasMany(Port::class);
+    }
+
     public function getWeatherTempAttribute()
     {
         return $this->weatherLogs()->latest('recorded_at')->value('temperature');

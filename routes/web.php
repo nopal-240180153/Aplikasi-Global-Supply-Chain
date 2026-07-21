@@ -14,6 +14,7 @@ use App\Http\Controllers\PortController;
 use App\Http\Controllers\VisualizationController;
 use App\Http\Controllers\ComparisonController;
 use App\Http\Controllers\WatchlistController;
+use App\Http\Controllers\LogisticsController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
@@ -75,6 +76,14 @@ Route::middleware(['auth'])->group(function () {
     
     Route::get('/api/ports/data', [PortController::class, 'getData'])
         ->name('ports.data');
+
+    // Logistics Simulator
+    Route::get('/logistics', [LogisticsController::class, 'index'])
+        ->name('logistics.index');
+    Route::get('/logistics/ports/{country_id}', [LogisticsController::class, 'getPortsByCountry'])
+        ->name('logistics.ports');
+    Route::post('/logistics/calculate', [LogisticsController::class, 'calculate'])
+        ->name('logistics.calculate');
 
     // Data Visualization Dashboard
     Route::get('/visualizations', [VisualizationController::class, 'index'])

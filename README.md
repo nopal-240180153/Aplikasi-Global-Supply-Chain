@@ -19,7 +19,7 @@ Platform monitoring risiko rantai pasok global berbasis web dengan integrasi mul
 - 🔐 **Admin Portal** - Sync management, lexicon editor, user & article management
 - 🔌 **REST API v1** - API endpoints untuk integrasi eksternal
 - 🔄 **Background Jobs** - Queue system untuk data sync
-- 📱 **Responsive Design** - Mobile-friendly Bootstrap 5 + Tailwind CSS
+- 📱 **Modern & Responsive UI** - Antarmuka yang telah diperbarui secara menyeluruh (revamped UI) dengan Bootstrap 5 + Tailwind CSS yang elegan dan responsif di semua perangkat.
 
 ---
 
@@ -53,42 +53,22 @@ npm run build
 php artisan serve
 ```
 
-### 6. Start Auto Sync (Optional)
-**Windows:**
+### 6. Menjalankan Queue Worker
+Karena aplikasi ini menggunakan sistem Queue untuk proses sinkronisasi di background, jalankan perintah berikut di terminal terpisah:
 ```bash
-start-scheduler.bat
-```
-**Manual:**
-```bash
-# Terminal 1: Queue Worker
 php artisan queue:work
-
-# Terminal 2: Scheduler
-php artisan schedule:work
 ```
 
 ---
 
-## 🔄 Auto Sync Setup
+## 🔄 Sinkronisasi Data API
 
-Sistem ini memiliki fitur **auto sync setiap 8 jam** untuk mengambil data terbaru dari API eksternal.
+Seluruh proses sinkronisasi data dari berbagai API eksternal dilakukan **secara manual** melalui halaman Admin.
 
-### Windows (Development)
-Jalankan file batch yang sudah disediakan:
-```bash
-# Start services
-start-scheduler.bat
-
-# Stop services
-stop-scheduler.bat
-```
-
-### Manual Sync
-Untuk sync manual semua data:
-```bash
-php artisan sync:all
-```
-Atau gunakan UI di menu **Admin > Sync**
+1. Login ke dalam aplikasi menggunakan akun Admin.
+2. Navigasi ke menu **Admin > Sync**.
+3. Anda dapat memilih untuk sinkronisasi data tertentu (Negara, Cuaca, Ekonomi, dll) atau menjalankan "Sync All".
+4. Pastikan `php artisan queue:work` sedang berjalan di server agar proses sinkronisasi dapat dieksekusi di background.
 
 ---
 
@@ -188,35 +168,33 @@ Aplikasi ini mengintegrasikan **6 API eksternal**:
 
 ---
 
-## 🎯 Jadwal Auto Sync
-Sinkronisasi otomatis berjalan setiap **8 jam** pada:
-- 00:00 (tengah malam)
-- 08:00 (pagi)
-- 16:00 (sore)
+## 🎯 Urutan Sinkronisasi Data
+Saat melakukan sinkronisasi secara manual, disarankan untuk mengikuti urutan berikut agar relasi data dapat terhubung dengan baik:
 
-**Urutan sync:**
-1. Countries
+1. Countries (Data Master)
 2. Weather
 3. Exchange Rates
 4. Economy Data
 5. News
-6. Risk Analysis
+6. Risk Analysis (Dilakukan paling akhir karena mengkalkulasi ulang risiko berdasarkan data lain)
 
 ---
 
-## 🌐 Deployment (InfinityFree)
+## 🌐 Deployment (Local Expose via Ngrok)
 
-Platform ini telah disiapkan untuk deployment ke **InfinityFree** (100% gratis).
+Platform ini dapat diekspos ke publik dengan cepat dari environment lokal menggunakan **Ngrok** untuk keperluan demo atau testing.
 
 ### Quick Deployment Steps:
-1. **Export Database**: `mysqldump -u root global_supply_chain > database.sql`
-2. **Registrasi InfinityFree**: Buat hosting account.
-3. **Upload Files**: ZIP project (tanpa `vendor/`, `node_modules/`, `.env`), upload via cPanel File Manager. Struktur: `/laravel-app/` (app) dan `/htdocs/` (public).
-4. **Setup Database**: Buat database MySQL di cPanel, import `database.sql`.
-5. **Konfigurasi Environment**: Buat `.env`, sesuaikan credentials, set `APP_ENV=production` & `APP_DEBUG=false`.
-6. **Testing**: Akses domain, test semua fitur & API.
+1. **Download & Install Ngrok**: Kunjungi [ngrok.com](https://ngrok.com) untuk mengunduh versi yang sesuai.
+2. **Setup Autentikasi**: Jalankan `ngrok config add-authtoken <YOUR_AUTH_TOKEN>` (dapatkan token dari dashboard Ngrok).
+3. **Jalankan Aplikasi Lokal**: Pastikan aplikasi berjalan (misalnya menggunakan `php artisan serve` di port 8000).
+4. **Ekspos dengan Ngrok**: Buka terminal baru dan jalankan perintah:
+   ```bash
+   ngrok http 8000
+   ```
+5. **Akses URL Publik**: Ngrok akan menghasilkan sebuah URL publik (contoh: `https://abcd-123.ngrok-free.app`). Salin URL tersebut untuk demo.
 
-*Catatan: InfinityFree tidak support Laravel scheduler otomatis, sehingga sync data harus dilakukan manual via Admin Panel.*
+*Catatan: Menggunakan Ngrok sangat cocok untuk presentasi dan demo instan tanpa perlu memindahkan file kode maupun database ke server hosting eksternal. Pastikan queue worker tetap berjalan secara lokal jika Anda akan mencontohkan proses sinkronisasi.*
 
 ---
 
