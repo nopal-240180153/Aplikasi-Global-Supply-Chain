@@ -2,7 +2,7 @@
 
 Platform monitoring risiko rantai pasok global berbasis web dengan integrasi multi-API, sentiment analysis, dan visualisasi data interaktif menggunakan Laravel.
 
-## 📋 Fitur Utama (10 Fitur)
+## 📋 Fitur Utama (11 Fitur)
 
 1. **📊 Dashboard Interaktif** - Overview statistik, chart distribusi negara & risiko, top risk countries
 2. **🌍 Data Negara Lengkap** - 254 negara dengan detail ekonomi, cuaca, risiko & peta interaktif
@@ -14,6 +14,7 @@ Platform monitoring risiko rantai pasok global berbasis web dengan integrasi mul
 8. **⚓ Peta Pelabuhan Global** - 126 ports dengan Leaflet.js interactive map
 9. **📈 Visualisasi & Perbandingan Data** - Multi-country comparison dengan Chart.js
 10. **⭐ Watchlist / Favorit** - Manajemen negara favorit user
+11. **🚚 Logistics Simulator** - Simulasi impor/ekspor antar pelabuhan dengan kalkulasi jarak (Haversine), ETA kapal kargo, cuaca real-time, dan pemetaan rute interaktif
 
 ### ✨ Bonus Features:
 - 🔐 **Admin Portal** - Sync management, lexicon editor, user & article management

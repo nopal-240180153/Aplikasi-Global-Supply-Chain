@@ -38,8 +38,9 @@ class LogisticsController extends Controller
             ], 400);
         }
 
-        // Calculate Distance
-        $distanceKm = $this->calculateDistance($originPort->latitude, $originPort->longitude, $destPort->latitude, $destPort->longitude);
+        // Calculate Distance (dengan Detour Factor 1.25 untuk rute laut/manuver daratan)
+        $straightDistanceKm = $this->calculateDistance($originPort->latitude, $originPort->longitude, $destPort->latitude, $destPort->longitude);
+        $distanceKm = $straightDistanceKm * 1.25;
         $distanceNm = $distanceKm * 0.539957;
 
         // Calculate Time (20 knots average cargo ship speed)
@@ -66,9 +67,32 @@ class LogisticsController extends Controller
 
         // Risk & Exchange (Destination Country)
         $destCountry = $destPort->country;
-        $riskScore = $destCountry->risk_score ?? 0;
-        $riskLevel = $destCountry->risk_level ?? 'Low';
+        $baseRiskScore = $destCountry->risk_score ?? 0;
         $exchangeRate = $destCountry->exchange_rate ?? 1;
+
+        // Hitung dynamic risk score berdasarkan cuaca saat ini (penalti jika cuaca buruk)
+        $dynamicRiskScore = $baseRiskScore;
+        $isWeatherBad = false;
+
+        if (isset($destWeather['current'])) {
+            $wind = $destWeather['current']['wind_speed_10m'] ?? 0;
+            if ($wind > 80) {
+                $dynamicRiskScore += 25;
+                $isWeatherBad = true;
+            } elseif ($wind > 40) {
+                $dynamicRiskScore += 15;
+                $isWeatherBad = true;
+            }
+        }
+        $dynamicRiskScore = min(100, $dynamicRiskScore);
+
+        if ($dynamicRiskScore < 20) {
+            $dynamicRiskLevel = 'Rendah';
+        } elseif ($dynamicRiskScore < 35) {
+            $dynamicRiskLevel = 'Sedang';
+        } else {
+            $dynamicRiskLevel = 'Tinggi';
+        }
 
         return response()->json([
             'distance_km' => round($distanceKm, 2),
@@ -77,8 +101,8 @@ class LogisticsController extends Controller
             'estimated_hours' => $hours,
             'weather' => $weatherData,
             'destination_risk' => [
-                'score' => $riskScore,
-                'level' => $riskLevel
+                'score' => $dynamicRiskScore,
+                'level' => $dynamicRiskLevel . ($isWeatherBad ? ' (Cuaca Buruk)' : '')
             ],
             'destination_exchange' => [
                 'currency' => $destCountry->currency_code ?? 'USD',
