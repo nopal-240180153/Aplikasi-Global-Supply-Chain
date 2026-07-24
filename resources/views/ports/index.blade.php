@@ -185,69 +185,90 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // Initialize map
-    const map = L.map('map').setView([0, 20], 2);
+    try {
+        // Initialize map
+        const map = L.map('map').setView([20, 0], 2);
 
-    // Add OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
-        maxZoom: 18,
-        minZoom: 2
-    }).addTo(map);
+        // Add CartoDB Positron tile layer
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '© OpenStreetMap contributors, © CARTO',
+            maxZoom: 18,
+            minZoom: 2
+        }).addTo(map);
 
-    // Port data from backend
-    const ports = @json($ports);
+        // Ikon port: lingkaran hijau dengan jangkar — konsisten dengan halaman lain
+        const portIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#198754; color:white; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.4);'><i class='bi bi-anchor' style='font-size:13px'></i></div>",
+            iconSize: [26, 26],
+            iconAnchor: [13, 13],
+            popupAnchor: [0, -14]
+        });
 
-    // Marker cluster group (optional, jika banyak marker)
-    const markers = [];
+        const markers = []; // array untuk menyimpan semua marker aktif
 
-    // Add markers to map
-    ports.forEach(port => {
-        if (port.latitude && port.longitude) {
-            
-            // Create marker
-            const marker = L.marker([port.latitude, port.longitude], {
-                title: port.port_name
+        function addMarkers(ports) {
+            // Hapus marker lama
+            markers.forEach(m => m.remove());
+            markers.length = 0;
+
+            ports.forEach(port => {
+                const lat = parseFloat(port.latitude);
+                const lng = parseFloat(port.longitude);
+
+                if (!port.latitude || !port.longitude) return;
+                if (isNaN(lat) || isNaN(lng)) return;
+                if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return;
+
+                const countryName = port.country ? port.country.name : '';
+                const popupContent = `<b><i class="bi bi-anchor me-1"></i>${port.port_name}</b><br><small class="text-muted">${countryName}</small>`;
+
+                const marker = L.marker([lat, lng], { icon: portIcon })
+                    .bindPopup(popupContent);
+
+                marker.addTo(map);
+                markers.push(marker);
             });
 
-            // Create popup content
-            const popupContent = `
-                <div class="popup-title">
-                    ${port.port_name}
-                </div>
-                <div class="popup-info">
-                    <i class="bi bi-flag"></i>
-                    <span>${port.country ? port.country.name : 'T/A'}</span>
-                </div>
-                <div class="popup-info">
-                    <i class="bi bi-geo-alt"></i>
-                    <span>${parseFloat(port.latitude).toFixed(4)}° N, ${parseFloat(port.longitude).toFixed(4)}° E</span>
-                </div>
-            `;
+            console.log('Total markers rendered:', markers.length);
 
-            marker.bindPopup(popupContent);
-            marker.addTo(map);
-            markers.push(marker);
+            if (markers.length > 0) {
+                const group = L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.05));
+            }
         }
-    });
 
-    // Auto fit bounds if there are markers
-    if (markers.length > 0) {
-        const group = new L.featureGroup(markers);
-        map.fitBounds(group.getBounds().pad(0.1));
+        function loadPorts() {
+            const search  = document.getElementById('searchInput').value;
+            const country = document.getElementById('countrySelect').value;
+
+            const params = new URLSearchParams({ search, country });
+
+            fetch(`{{ route('ports.data') }}?${params}`)
+                .then(r => r.json())
+                .then(res => {
+                    if (res.success) {
+                        document.getElementById('port-count').textContent =
+                            res.total.toLocaleString('id-ID');
+                        addMarkers(res.ports);
+                    }
+                })
+                .catch(err => console.error('Gagal memuat pelabuhan:', err));
+        }
+
+        // Load on page ready
+        loadPorts();
+
+        // Filter form submit
+        document.getElementById('filterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            loadPorts();
+        });
+
+    } catch (mainErr) {
+        console.error('Map init error:', mainErr);
+        alert('Peta gagal dimuat: ' + mainErr.message);
     }
-
-    // Update counter
-    document.getElementById('port-count').textContent = ports.length.toLocaleString('id-ID');
-
-    // Handle form submission with AJAX (optional enhancement)
-    const filterForm = document.getElementById('filterForm');
-    filterForm.addEventListener('submit', function(e) {
-        // Let the form submit normally to reload page
-        // Or use AJAX if you want dynamic update
-    });
-
 });
 </script>
 @endpush

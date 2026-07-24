@@ -126,6 +126,15 @@
 
         </a>
 
+        <a href="{{ route('admin.ports.index') }}"
+           class="{{ request()->routeIs('admin.ports*') ? 'active' : '' }}">
+
+            <i class="bi bi-geo-alt"></i>
+
+            Dataset Pelabuhan
+
+        </a>
+
         <a href="{{ route('admin.articles.index') }}"
            class="{{ request()->routeIs('admin.articles*') ? 'active' : '' }}">
 

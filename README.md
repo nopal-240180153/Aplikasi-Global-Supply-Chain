@@ -24,6 +24,28 @@ Platform monitoring risiko rantai pasok global berbasis web dengan integrasi mul
 
 ---
 
+## 🧠 Algoritma & Formula Terapan
+
+Aplikasi ini menggunakan berbagai algoritma untuk mengolah data mentah menjadi wawasan intelijen (*Risk Intelligence*):
+
+1. **Algoritma Haversine (Logistics Simulator)**
+   - Menghitung **Great-Circle Distance** (jarak garis lurus/udara dengan kelengkungan bumi) antara dua titik koordinat (Latitude & Longitude) pelabuhan tujuan dan asal.
+   - Dilengkapi **Detour Factor (+25%)** untuk mengompensasi manuver kapal menghindari daratan agar jarak rute lautnya lebih realistis.
+
+2. **Weighted Scoring Algorithm (Risk Calculation)**
+   - Menghitung **Supply Chain Risk Score (Skala 0-100)** secara periodik menggunakan sistem pembobotan multi-variabel (*Weighted Multiple-Criteria Decision Analysis*).
+   - Parameter bobot: Cuaca Ekstrem (30%), Volatilitas Ekonomi (30%), Fluktuasi Nilai Tukar (20%), Sentimen Berita Global (20%).
+
+3. **Lexicon-Based Sentiment Analysis (News Analytics)**
+   - Melakukan ekstraksi sentimen pada judul dan konten berita global secara otomatis.
+   - Sistem mencocokkan teks terhadap *database lexicon* bahasa (positif/negatif) untuk menghasilkan **News Sentiment Score** dalam rentang -10 hingga +10.
+
+4. **Dynamic Weather Penalty Threshold**
+   - Algoritma injeksi penalti risiko *real-time* yang bekerja saat simulasi rute kapal. 
+   - Sistem membaca cuaca langsung (*live*) via API dan memodifikasi *Risk Score* negara tujuan pada detik itu juga (Misal: jika kecepatan angin > 40 km/h, maka *Risk Score* mendapat penalti +15 poin).
+
+---
+
 ## 🚀 Quick Start
 
 ### 1. Install Dependencies

@@ -17,6 +17,7 @@ use App\Http\Controllers\WatchlistController;
 use App\Http\Controllers\LogisticsController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PortController as AdminPortController;
 use App\Http\Controllers\Admin\ArticleController as AdminArticleController;
 use App\Http\Controllers\ArticleController;
 
@@ -211,6 +212,20 @@ Route::middleware(['auth'])->group(function () {
             ->name('admin.users.destroy');
         Route::post('/admin/users/{user}/toggle-admin', [UserController::class, 'toggleAdmin'])
             ->name('admin.users.toggle-admin');
+
+        // Port Management
+        Route::get('/admin/ports', [AdminPortController::class, 'index'])
+            ->name('admin.ports.index');
+        Route::get('/admin/ports/create', [AdminPortController::class, 'create'])
+            ->name('admin.ports.create');
+        Route::post('/admin/ports', [AdminPortController::class, 'store'])
+            ->name('admin.ports.store');
+        Route::get('/admin/ports/{port}/edit', [AdminPortController::class, 'edit'])
+            ->name('admin.ports.edit');
+        Route::put('/admin/ports/{port}', [AdminPortController::class, 'update'])
+            ->name('admin.ports.update');
+        Route::delete('/admin/ports/{port}', [AdminPortController::class, 'destroy'])
+            ->name('admin.ports.destroy');
 
         // Article Management
         Route::get('/admin/articles', [AdminArticleController::class, 'index'])

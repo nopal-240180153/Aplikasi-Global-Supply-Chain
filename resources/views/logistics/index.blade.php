@@ -178,8 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize Map
     const map = L.map('map').setView([0, 0], 2);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap contributors',
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap contributors, © CARTO',
         maxZoom: 18,
         minZoom: 2
     }).addTo(map);
@@ -324,9 +324,27 @@ document.addEventListener('DOMContentLoaded', function() {
             [dest.latitude, dest.longitude]
         ];
 
-        // Draw Markers
-        L.marker([origin.latitude, origin.longitude]).bindPopup(`<b>${origin.port_name}</b> (Asal)`).addTo(markersLayer);
-        L.marker([dest.latitude, dest.longitude]).bindPopup(`<b>${dest.port_name}</b> (Tujuan)`).addTo(markersLayer);
+        // Validasi koordinat (mencegah koordinat asal-asalan merusak peta)
+        const isValidCoord = (lat, lng) => lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180;
+        
+        if (!isValidCoord(origin.latitude, origin.longitude) || !isValidCoord(dest.latitude, dest.longitude)) {
+            console.error("Koordinat tidak valid!", origin, dest);
+            alert("Gagal memuat rute: Salah satu pelabuhan memiliki koordinat tidak valid.");
+            return;
+        }
+
+        const markerOpts = {
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#198754; color:white; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:2px solid white; box-shadow:0 2px 6px rgba(0,0,0,0.4);'><i class='bi bi-anchor' style='font-size:13px'></i></div>",
+            iconSize: [26, 26],
+            iconAnchor: [13, 13],
+            popupAnchor: [0, -14]
+        };
+        const portIcon = L.divIcon(markerOpts);
+
+        // Draw Markers (consistent style with port map & country pages)
+        L.marker([origin.latitude, origin.longitude], {icon: portIcon}).bindPopup(`<b><i class="bi bi-anchor me-1"></i>${origin.port_name}</b><br><small class="text-muted">Asal</small>`).addTo(markersLayer);
+        L.marker([dest.latitude, dest.longitude], {icon: portIcon}).bindPopup(`<b><i class="bi bi-anchor me-1"></i>${dest.port_name}</b><br><small class="text-muted">Tujuan</small>`).addTo(markersLayer);
 
         // Draw Polyline with curve effect by adding multiple points or just straight line
         routeLayer = L.polyline(latlngs, {color: '#4f46e5', weight: 4, dashArray: '10, 10'}).addTo(map);

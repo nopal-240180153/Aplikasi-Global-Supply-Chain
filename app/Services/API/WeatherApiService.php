@@ -27,7 +27,8 @@ class WeatherApiService
                     'temperature_2m',
                     'relative_humidity_2m',
                     'wind_speed_10m',
-                    'weather_code'
+                    'weather_code',
+                    'precipitation'
                 ])
 
             ]);

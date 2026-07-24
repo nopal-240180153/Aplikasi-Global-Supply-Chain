@@ -16,7 +16,7 @@ class WeatherMapper
 
             'temperature' => $current['temperature_2m'] ?? null,
 
-            'rainfall' => 0,
+            'rainfall' => $current['precipitation'] ?? 0,
 
             'wind_speed' => $current['wind_speed_10m'] ?? null,
 

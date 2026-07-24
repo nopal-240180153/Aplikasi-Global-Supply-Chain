@@ -303,21 +303,55 @@
 
     // ── Chart.js defaults ────────────────────────────────────────────────────
     Chart.defaults.font.family = "'Inter','Segoe UI',sans-serif";
-    Chart.defaults.font.size   = 11;
+    Chart.defaults.font.size   = 12;
     Chart.defaults.color       = '#64748b';
+    Chart.defaults.scale.grid.color = '#f1f5f9';
 
-    const lineOpts = (xLabel = 'Tahun', yLabel = '') => ({
+    // Helper untuk membuat gradient
+    function createGradient(ctx, colorStart, colorEnd) {
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, colorStart);
+        gradient.addColorStop(1, colorEnd);
+        return gradient;
+    }
+
+    const chartOpts = (xLabel = 'Tahun', yLabel = '') => ({
         responsive: true,
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
         plugins: {
             legend: { display: false },
-            tooltip: { mode: 'index', intersect: false },
+            tooltip: { 
+                mode: 'index', 
+                intersect: false,
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                titleColor: '#0f172a',
+                bodyColor: '#334155',
+                borderColor: '#e2e8f0',
+                borderWidth: 1,
+                padding: 12,
+                boxPadding: 6,
+                usePointStyle: true,
+                titleFont: { size: 13, weight: 'bold' },
+                bodyFont: { size: 12 }
+            },
         },
         scales: {
-            x: { grid: { display: false }, title: { display: !!xLabel, text: xLabel, font:{size:10} } },
-            y: { grid: { color: '#f1f5f9' }, title: { display: !!yLabel, text: yLabel, font:{size:10} } },
+            x: { 
+                grid: { display: false }, 
+                title: { display: !!xLabel, text: xLabel, font:{size:11, weight:'500'} },
+                ticks: { padding: 10 }
+            },
+            y: { 
+                grid: { color: '#f8fafc', drawBorder: false, borderDash: [5, 5] }, 
+                title: { display: !!yLabel, text: yLabel, font:{size:11, weight:'500'} },
+                ticks: { padding: 10 },
+                beginAtZero: true
+            },
         },
+        elements: {
+            bar: { borderRadius: 6, borderSkipped: false, maxBarThickness: 40 }
+        }
     });
 
     function makeChart(id, opts) {
@@ -337,6 +371,23 @@
         ctx.font = '12px Inter,sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Memuat data...', ctx.canvas.width/2, ctx.canvas.height/2);
+    }
+
+    // Enhance datasets with gradients
+    function enhanceDatasets(ctx, datasets, baseColorRgb) {
+        return datasets.map((ds, i) => {
+            const isMulti = datasets.length > 1;
+            const rgb = isMulti ? (ds.borderColor || baseColorRgb) : baseColorRgb;
+            const rawRgb = rgb.replace(/[^\d,]/g, '').split(',').slice(0,3).join(',');
+            
+            return {
+                ...ds,
+                backgroundColor: createGradient(ctx, `rgba(${rawRgb}, 0.7)`, `rgba(${rawRgb}, 0.2)`),
+                borderColor: `rgba(${rawRgb}, 1)`,
+                borderWidth: 1,
+                hoverBackgroundColor: `rgba(${rawRgb}, 0.9)`
+            };
+        });
     }
 
     // ── Load all 4 charts ────────────────────────────────────────────────────
@@ -362,31 +413,43 @@
                     'Update: ' + new Date().toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'});
 
                 // --- GDP ---
+                const ctxGdp = document.getElementById('chart-gdp').getContext('2d');
+                d.gdp.datasets = enhanceDatasets(ctxGdp, d.gdp.datasets, '13, 110, 253'); // Blue
                 cGdp = makeChart('chart-gdp', {
-                    type: 'line',
+                    type: 'bar',
                     data: d.gdp,
-                    options: lineOpts('Tahun', 'GDP (USD)'),
+                    options: chartOpts('Tahun', 'GDP (USD)'),
                 });
 
                 // --- Inflation ---
+                const ctxInfl = document.getElementById('chart-inflation').getContext('2d');
+                d.inflation.datasets = enhanceDatasets(ctxInfl, d.inflation.datasets, '220, 53, 69'); // Red
                 cInfl = makeChart('chart-inflation', {
-                    type: 'line',
+                    type: 'bar',
                     data: d.inflation,
-                    options: lineOpts('Tahun', 'Inflasi (%)'),
+                    options: chartOpts('Tahun', 'Inflasi (%)'),
                 });
 
                 // --- Currency ---
+                const ctxCurr = document.getElementById('chart-currency').getContext('2d');
+                d.currency.datasets = enhanceDatasets(ctxCurr, d.currency.datasets, '25, 135, 84'); // Green
                 cCurr = makeChart('chart-currency', {
-                    type: 'line',
+                    type: 'bar',
                     data: d.currency,
-                    options: lineOpts('Bulan', 'Nilai Tukar'),
+                    options: chartOpts('Bulan', 'Nilai Tukar'),
                 });
 
                 // --- Risk (multi-line) ---
-                const riskOpts = lineOpts('Bulan', 'Skor');
-                riskOpts.plugins.legend = { display: true, position: 'bottom', labels:{boxWidth:12,padding:12,font:{size:10}} };
+                const ctxRisk = document.getElementById('chart-risk').getContext('2d');
+                d.risk.datasets = enhanceDatasets(ctxRisk, d.risk.datasets, '255, 193, 7'); // Yellow
+                const riskOpts = chartOpts('Bulan', 'Skor Risiko');
+                riskOpts.plugins.legend = { 
+                    display: true, 
+                    position: 'bottom', 
+                    labels: { boxWidth:12, padding:12, font: {size:11, family: "'Inter', sans-serif"}, usePointStyle: true } 
+                };
                 cRisk = makeChart('chart-risk', {
-                    type: 'line',
+                    type: 'bar',
                     data: d.risk,
                     options: riskOpts,
                 });
