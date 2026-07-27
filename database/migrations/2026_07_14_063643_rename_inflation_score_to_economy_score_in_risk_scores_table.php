@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -12,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        DB::statement("
-            ALTER TABLE risk_scores
-            CHANGE inflation_score economy_score DECIMAL(5,2) NOT NULL DEFAULT 0
-        ");
+        if (Schema::hasTable('risk_scores') && Schema::hasColumn('risk_scores', 'inflation_score')) {
+            Schema::table('risk_scores', function (Blueprint $table) {
+                $table->renameColumn('inflation_score', 'economy_score');
+            });
+        }
     }
 
     /**
@@ -23,9 +23,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        DB::statement("
-            ALTER TABLE risk_scores
-            CHANGE economy_score inflation_score DECIMAL(5,2) NOT NULL DEFAULT 0
-        ");
+        if (Schema::hasTable('risk_scores') && Schema::hasColumn('risk_scores', 'economy_score')) {
+            Schema::table('risk_scores', function (Blueprint $table) {
+                $table->renameColumn('economy_score', 'inflation_score');
+            });
+        }
     }
 };
