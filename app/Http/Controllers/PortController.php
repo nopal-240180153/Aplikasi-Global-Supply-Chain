@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Port;
 use App\Models\Country;
+use App\Services\AutoSyncService;
 use Illuminate\Http\Request;
 
 class PortController extends Controller
@@ -13,6 +14,8 @@ class PortController extends Controller
      */
     public function index(Request $request)
     {
+        AutoSyncService::checkAndSync('Ports');
+
         // Get all countries for filter dropdown
         $countries = Country::orderBy('name')->get();
 

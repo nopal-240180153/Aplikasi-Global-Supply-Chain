@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RiskScore;
+use App\Services\AutoSyncService;
 use Illuminate\Http\Request;
 
 class RiskController extends Controller
@@ -12,6 +13,8 @@ class RiskController extends Controller
      */
     public function index(Request $request)
     {
+        AutoSyncService::checkAndSync('Risk');
+
         $query = RiskScore::with('country');
 
         // Filter search by country name

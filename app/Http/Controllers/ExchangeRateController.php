@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\ExchangeRateRepository;
+use App\Services\AutoSyncService;
 use Illuminate\Support\Facades\DB;
 
 class ExchangeRateController extends Controller
@@ -20,6 +21,8 @@ class ExchangeRateController extends Controller
      */
    public function index()
 {
+    AutoSyncService::checkAndSync('Exchange Rate');
+
     $query = \App\Models\ExchangeRate::with('country')
         ->orderByDesc('recorded_at');
 

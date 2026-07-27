@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Repositories\EconomyRepository;
+use App\Services\AutoSyncService;
 use Illuminate\Http\Request;
 
 class EconomyController extends Controller
@@ -17,6 +18,8 @@ class EconomyController extends Controller
 
     public function index(Request $request)
     {
+        AutoSyncService::checkAndSync('Economy');
+
         $search = $request->input('search');
         $region = $request->input('region');
         

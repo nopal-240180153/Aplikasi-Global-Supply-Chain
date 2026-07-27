@@ -7,12 +7,15 @@ use App\Models\WeatherLog;
 use App\Models\ExchangeRate;
 use App\Models\EconomyData;
 use App\Models\NewsArticle;
+use App\Services\AutoSyncService;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        AutoSyncService::checkAndSync('Countries');
+
         /*
         |--------------------------------------------------------------------------
         | KPI

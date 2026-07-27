@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Country;
 use App\Models\NewsArticle;
+use App\Services\AutoSyncService;
 
 class NewsController extends Controller
 {
     public function index()
     {
+        AutoSyncService::checkAndSync('News');
+
         $countries = Country::whereHas('newsArticles')->orderBy('name')->get();
 
         $countryId = request('country');

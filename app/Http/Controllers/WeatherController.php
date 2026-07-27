@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Country;
 use App\Models\WeatherLog;
 use App\Repositories\WeatherRepository;
+use App\Services\AutoSyncService;
 
 class WeatherController extends Controller
 {
@@ -18,6 +19,8 @@ class WeatherController extends Controller
 
     public function index(Request $request)
     {
+        AutoSyncService::checkAndSync('Weather');
+
         $search = $request->search;
         $continent = $request->continent;
         $condition = $request->condition;

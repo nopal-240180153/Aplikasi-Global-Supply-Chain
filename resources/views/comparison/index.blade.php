@@ -369,17 +369,43 @@
     }
 
     function gcPts(s, e, n) {
-        var r=function(d){return d*Math.PI/180;}, d2=function(x){return x*180/Math.PI;};
-        var la1=r(s[0]),lo1=r(s[1]),la2=r(e[0]),lo2=r(e[1]);
-        var D=2*Math.asin(Math.sqrt(Math.pow(Math.sin((la2-la1)/2),2)+Math.cos(la1)*Math.cos(la2)*Math.pow(Math.sin((lo2-lo1)/2),2)));
-        if (D<.001) return [s,e];
-        var pts=[];
-        for(var i=0;i<=n;i++){
-            var f=i/n,A=Math.sin((1-f)*D)/Math.sin(D),B=Math.sin(f*D)/Math.sin(D);
-            var x=A*Math.cos(la1)*Math.cos(lo1)+B*Math.cos(la2)*Math.cos(lo2);
-            var y=A*Math.cos(la1)*Math.sin(lo1)+B*Math.cos(la2)*Math.sin(lo2);
-            var z=A*Math.sin(la1)+B*Math.sin(la2);
-            pts.push([d2(Math.atan2(z,Math.sqrt(x*x+y*y))),d2(Math.atan2(y,x))]);
+        // Menggunakan Bezier Curve sederhana alih-alih Great Circle 
+        // untuk menghindari bug garis lurus melewati kutub atau antimeridian di Leaflet 2D
+        var lat1 = s[0], lon1 = s[1];
+        var lat2 = e[0], lon2 = e[1];
+        
+        // Mencegah garis melintang seluruh layar jika melewati batas bumi (Antimeridian)
+        if (lon2 - lon1 > 180) lon1 += 360;
+        else if (lon1 - lon2 > 180) lon2 += 360;
+
+        var dLat = lat2 - lat1;
+        var dLon = lon2 - lon1;
+        var dist = Math.sqrt(dLat*dLat + dLon*dLon);
+
+        if (dist < 0.001) return [s, e];
+
+        var midLat = (lat1 + lat2) / 2;
+        var midLon = (lon1 + lon2) / 2;
+
+        // Vektor tegak lurus untuk titik kontrol lengkungan
+        var perpLat = -dLon;
+        var perpLon = dLat;
+        var len = Math.sqrt(perpLat*perpLat + perpLon*perpLon);
+        if(len > 0) { perpLat /= len; perpLon /= len; }
+        
+        // Selalu melengkung ke atas (Utara) agar terlihat rapi
+        if (perpLat < 0) { perpLat = -perpLat; perpLon = -perpLon; }
+
+        var ctrlLat = midLat + (perpLat * dist * 0.2);
+        var ctrlLon = midLon + (perpLon * dist * 0.2);
+
+        var pts = [];
+        for (var i = 0; i <= n; i++) {
+            var t = i / n;
+            var invT = 1 - t;
+            var pLat = (invT * invT * lat1) + (2 * invT * t * ctrlLat) + (t * t * lat2);
+            var pLon = (invT * invT * lon1) + (2 * invT * t * ctrlLon) + (t * t * lon2);
+            pts.push([pLat, pLon]);
         }
         return pts;
     }

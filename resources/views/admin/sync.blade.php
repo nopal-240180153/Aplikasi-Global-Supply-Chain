@@ -145,7 +145,7 @@
 
                             <td>
 
-                                {{ optional($countrySync?->finished_at)->format('d M Y H:i') ?? '-' }}
+                                {{ optional($countrySync?->finished_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i \W\I\B') ?? '-' }}
 
                             </td>
 
@@ -263,7 +263,7 @@
 
                             <td>
 
-                                {{ optional($weatherSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+                                {{ optional($weatherSync?->finished_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i \W\I\B') ?? '-' }}
 
                             </td>
 
@@ -383,7 +383,7 @@
 
                             <td>
 
-                                {{ optional($exchangeRateSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+                                {{ optional($exchangeRateSync?->finished_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i \W\I\B') ?? '-' }}
 
                             </td>
 
@@ -525,7 +525,7 @@
 
                             <td>
 
-                                {{ optional($economySync?->finished_at)->format('d M Y H:i') ?? '-' }}
+                                {{ optional($economySync?->finished_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i \W\I\B') ?? '-' }}
 
                             </td>
 
@@ -673,7 +673,7 @@
 
                         <td>
 
-                            {{ optional($riskSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+                            {{ optional($riskSync?->finished_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i \W\I\B') ?? '-' }}
 
                         </td>
 
@@ -809,7 +809,7 @@
 
                         <td>
 
-                            {{ optional($newsSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+                            {{ optional($newsSync?->finished_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i \W\I\B') ?? '-' }}
 
                         </td>
 
@@ -946,7 +946,7 @@
 
                         <td>
 
-                            {{ optional($portSync?->finished_at)->format('d M Y H:i') ?? '-' }}
+                            {{ optional($portSync?->finished_at)->setTimezone('Asia/Jakarta')->format('d M Y H:i \W\I\B') ?? '-' }}
 
                         </td>
 
