@@ -43,7 +43,12 @@
     </style>
 </head>
 <body>
-    @yield('content')
+    <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="card p-4 shadow-lg border-0" style="width: 100%; max-width: 450px;">
+            {{ $slot ?? '' }}
+            @yield('content')
+        </div>
+    </div>
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
