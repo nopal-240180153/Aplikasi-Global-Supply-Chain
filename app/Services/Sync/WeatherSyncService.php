@@ -70,9 +70,8 @@ class WeatherSyncService
                             $updated++;
 
                         } catch (\Throwable $e) {
-
+                            report($e);
                             $failed++;
-
                         }
 
                         $total++;
