@@ -25,6 +25,13 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Route Sementara untuk Hapus Cache View di Server
+Route::get('/clear-view-cache', function() {
+    \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('cache:clear');
+    return 'View & Cache cleared successfully!';
+});
+
 Route::redirect('/home', '/dashboard');
 
 // Admin Auth Routes
