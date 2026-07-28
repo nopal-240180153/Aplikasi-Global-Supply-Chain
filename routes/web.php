@@ -28,8 +28,10 @@ Route::get('/', function () {
 // Route Sementara untuk Hapus Cache View di Server
 Route::get('/clear-view-cache', function() {
     \Illuminate\Support\Facades\Artisan::call('view:clear');
+    \Illuminate\Support\Facades\Artisan::call('config:clear');
+    \Illuminate\Support\Facades\Artisan::call('route:clear');
     \Illuminate\Support\Facades\Artisan::call('cache:clear');
-    return 'View & Cache cleared successfully!';
+    return 'View, Config, Route, and App Cache cleared successfully!';
 });
 
 Route::redirect('/home', '/dashboard');
